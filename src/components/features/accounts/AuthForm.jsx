@@ -8,7 +8,7 @@ import {useUser} from '@/context/UserContext.tsx'
 export default function AuthForm() {
   const formRef = useRef(null);
   const buttonRef = useRef(null);
-  const { login } = useUser();
+  const { user, login } = useUser();
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -22,7 +22,7 @@ export default function AuthForm() {
     };
 
     // 2. Validation
-    if (!credentials.username || !credentials.password) {
+    if (!credentials.email || !credentials.password) {
       throw new Error('Identifiant et mot de passe sont requis');
     }
 
@@ -31,10 +31,9 @@ export default function AuthForm() {
     buttonRef.current.disabled = true;
 
     // 4. Requête POST vers l'endpoint JWT
-    login(credentials);
+    // login(credentials);
 
     // 5. Redirection
-    const { user } = useUser();
     
     if (user?.role === 'admin') {
       router.push('/dashboard/admin');

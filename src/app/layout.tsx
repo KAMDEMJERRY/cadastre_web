@@ -9,15 +9,12 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
-export const metadata: Metadata = {
-  title: "CadastreWeb",
-  description: "Application de gestion des lotissements",
-};
+
+// export const metadata: Metadata = {
+//   title: "CadastreWeb",
+//   description: "Application de gestion des lotissements",
+// };
 
 export default function RootLayout({
   children,
@@ -27,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistSans.variable} antialiased`}
       >
         <UserProvider>
           <AppProviders>

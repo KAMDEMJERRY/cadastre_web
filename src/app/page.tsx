@@ -28,8 +28,10 @@ export default function Home() {
 
         <div className="flex gap-4">
           <Link
-            // href="/accounts/login"
-            href="/dashboard/admin/"
+            href="/accounts/login"
+            // href="/dashboard/admin/lotissements"
+            // href="/login"
+            // href="/dashboard/proprietaire/1/"
             className="rounded-full bg-blue-600 text-white px-6 py-3 hover:bg-blue-700 transition-colors font-medium"
           >
             Se connecter

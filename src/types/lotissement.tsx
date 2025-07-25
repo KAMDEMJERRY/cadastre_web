@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type Lotissement = {
   id: string;
   nom: string;
@@ -12,10 +14,20 @@ export type Bloc = {
   nombreParcelles: number;
 };
 
-export type Parcelle = {
+
+export interface Coordonnees {
+  lat: number;
+  lng: number;
+}
+
+
+export interface Parcelle {
   id: string;
   numero: string;
-  blocId: string;
+  lotissement: string;
+  bloc: string;
   superficie: number;
-  proprietaireId: string | null;
-};
+  perimetre: number;
+  coordinates: [number, number][];
+  proprietaire: User;
+}

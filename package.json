@@ -9,10 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.2.5",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@types/leaflet": "^1.9.20",
+    "@types/xlsx": "^0.0.36",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "leaflet": "^1.9.4",
+    "leaflet-draw": "^1.0.4",
+    "lucide-react": "^0.525.0",
     "next": "^15.4.3",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-leaflet": "^5.0.0",
+    "tailwind-merge": "^3.3.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

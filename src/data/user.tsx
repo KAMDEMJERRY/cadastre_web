@@ -8,5 +8,5 @@ export const DEFAULT_USER: User = {
   username: 'invite',
   firstname: 'Invité',
   lastname: 'Temporaire',
-  role: 'proprietaire', // ou le rôle que vous voulez par défaut
+  role: 'admin' //'proprietaire', // ou le rôle que vous voulez par défaut
 };
