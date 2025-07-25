@@ -16,14 +16,13 @@ Application web pour la gestion cadastrale (lotissements, blocs, parcelles, prop
 ## Prérequis
 
 - Node.js 18+
-- npm 9+ ou yarn 1.22+
-- PostgreSQL 12+ (ou autre base de données configurée)
+- npm 9+
 
 ## Installation
 
 1. **Cloner le dépôt** :
    ```bash
-   git clone https://github.com/votre-utilisateur/cadastreweb.git
+   git clone https://github.com/KAMDEMJERRY/cadastre_web.git
    cd cadastreweb```
 
 ## Installer les dépendances:
