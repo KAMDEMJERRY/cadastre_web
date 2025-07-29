@@ -3,9 +3,9 @@
 
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { User } from '@/types/user';
-import { loginUser } from '@/lib/api/auth';
+import { loginUser } from '@/services/api/auth';
 import { LoginCredentials } from '@/types/auth.d';
-import { fetchUserProfile } from '@/lib/api/user';
+import { fetchUserProfile } from '@/services/api/user';
 import { DEFAULT_USER } from '@/data/user';
 
 type UserContextType = {

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import {useUser} from '@/context/UserContext.tsx'
+
 export default function AuthForm() {
   const formRef = useRef(null);
   const buttonRef = useRef(null);

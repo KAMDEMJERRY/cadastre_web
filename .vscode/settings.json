@@ -1,0 +1,9 @@
+{
+  "markdown.preview.fontSize": 16,
+  "markdown.preview.lineHeight": 1.6,
+  "markdown.styles": [
+    "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css"
+  ],
+  "markdown.preview.markEditorSelection": true,
+  "markdown.preview.scrollPreviewWithEditor": true
+}
