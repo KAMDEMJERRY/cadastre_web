@@ -1,5 +1,5 @@
 'use client';
-import {useUser} from '@/context/UserContext';
+import {useUser} from '@/hooks/useUser';
 import Button from '@/components/ui/Button1';
 
 export default function Header() {
@@ -15,7 +15,7 @@ export default function Header() {
         
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <h3 className="font-semibold">{user?.name}</h3>
+            <h3 className="font-semibold">{user?.username}</h3>
             <p className="text-sm opacity-90">ID: {user?.id}</p>
           </div>
           <Button variant="ghost" onClick={logout}>

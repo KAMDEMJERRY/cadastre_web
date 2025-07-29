@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { cn } from '@/services/utils';
+import { cn } from '@/utils/helpers';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard/admin', icon: '📊', exact:true },

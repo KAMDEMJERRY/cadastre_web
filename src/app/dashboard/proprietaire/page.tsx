@@ -2,7 +2,7 @@ import Header from '@/components/features/dashboard/Header';
 import StatsGrid from '@/components/features/dashboard/StatsGrid';
 import FiltersSection from '@/components/features/dashboard/FilterGrid';
 import ParcellesGrid from '@/components/features/dashboard/ParcellesGrid';
-import { fetchUserParcelles } from '@/lib/api/parcelle';
+import { fetchUserParcelles } from '@/services/api/parcelle';
 
 export default async function DashboardPage() {
   const parcelles = await fetchUserParcelles();

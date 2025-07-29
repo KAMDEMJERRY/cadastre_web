@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import {useUser} from '@/context/UserContext.tsx'
+import {useUser} from '@/hooks/useUser'
 
 export default function AuthForm() {
   const formRef = useRef(null);
@@ -32,10 +32,9 @@ export default function AuthForm() {
     buttonRef.current.disabled = true;
 
     // 4. Requête POST vers l'endpoint JWT
-    // login(credentials);
+    login(credentials);
 
     // 5. Redirection
-    
     if (user?.role === 'admin') {
       router.push('/dashboard/admin');
     } else if (user?.role === 'proprietaire') {
