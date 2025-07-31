@@ -1,7 +1,7 @@
 import AdminHeader from '@/components/features/admin/AdminHeader';
-import AdminNavCards from '@/components/features/dashboard/admin/AdminNavCards';
-import QuickActions from '@/components/features/dashboard/admin/QuickActions';
-import LotissementsTable from '@/components/features/dashboard/admin/LotissementsTable';
+import AdminNavCards from '@/app/dashboard/admin/components/admin/AdminNavCards';
+import QuickActions from '@/app/dashboard/admin/components/admin/QuickActions';
+import LotissementsTable from '@/app/dashboard/admin/components/admin/LotissementsTable';
 import { fetchLotissements } from '@/services/api/lotissement';
 
 export default async function AdminDashboard() {

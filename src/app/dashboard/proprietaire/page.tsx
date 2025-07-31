@@ -1,7 +1,7 @@
-import Header from '@/components/features/dashboard/Header';
-import StatsGrid from '@/components/features/dashboard/StatsGrid';
-import FiltersSection from '@/components/features/dashboard/FilterGrid';
-import ParcellesGrid from '@/components/features/dashboard/ParcellesGrid';
+import Header from '@/app/dashboard/proprietaire/components/Header';
+import StatsGrid from '@/app/dashboard/proprietaire/components/StatsGrid';
+import FiltersSection from '@/app/dashboard/proprietaire/components/FilterGrid';
+import ParcellesGrid from '@/app/dashboard/proprietaire/components/ParcellesGrid';
 import { fetchUserParcelles } from '@/services/api/parcelle';
 
 export default async function DashboardPage() {

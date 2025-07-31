@@ -40,7 +40,7 @@ export default function AuthForm() {
     } else if (user?.role === 'proprietaire') {
       router.push('/dashboard/proprietaire');
     } else {
-      router.push('/dashboard');
+      throw new Error('Erreur de connexion: Role inconnu\nVeuillez contacter l\'administrateur.');
     }
 
   } catch (error) {

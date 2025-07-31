@@ -6,7 +6,7 @@ import Button from '@/components/ui/Button1';
 type Parcelle = {
   id: string;
   numero: string;
-  status: 'active' | 'pending';
+  // status: 'active' | 'pending';
   lotissement: string;
   bloc: string;
   superficie: number;

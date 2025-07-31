@@ -1,0 +1,136 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main gradient matching the login page -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Subtle overlay gradients -->
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </radialGradient>
+    
+    <linearGradient id="overlayGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.2" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:0.15" />
+    </linearGradient>
+    
+    <!-- Geometric patterns for cadastral theme -->
+    <pattern id="cadastralGrid" patternUnits="userSpaceOnUse" width="100" height="100">
+      <rect width="100" height="100" fill="none"/>
+      <rect x="10" y="10" width="30" height="20" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.15"/>
+      <rect x="50" y="15" width="25" height="25" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.12"/>
+      <rect x="15" y="45" width="35" height="15" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.18"/>
+      <rect x="55" y="50" width="20" height="30" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.1"/>
+      <rect x="25" y="70" width="40" height="20" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.14"/>
+    </pattern>
+    
+    <!-- Subtle building/property shapes -->
+    <pattern id="propertyShapes" patternUnits="userSpaceOnUse" width="200" height="150">
+      <rect width="200" height="150" fill="none"/>
+      <!-- Simple house shapes -->
+      <polygon points="30,90 50,70 70,90 70,110 30,110" fill="#ffffff" opacity="0.05"/>
+      <polygon points="120,85 140,65 160,85 160,105 120,105" fill="#ffffff" opacity="0.08"/>
+      <polygon points="80,110 100,95 120,110 120,125 80,125" fill="#ffffff" opacity="0.06"/>
+      <!-- Property boundaries -->
+      <rect x="25" y="85" width="50" height="30" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.1"/>
+      <rect x="115" y="80" width="50" height="30" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.08"/>
+    </pattern>
+  </defs>
+  
+  <!-- Base gradient background -->
+  <rect width="1920" height="1080" fill="url(#mainGradient)"/>
+  
+  <!-- Subtle cadastral grid overlay -->
+  <rect width="1920" height="1080" fill="url(#cadastralGrid)" opacity="0.6"/>
+  
+  <!-- Property shapes pattern -->
+  <rect width="1920" height="1080" fill="url(#propertyShapes)" opacity="0.4"/>
+  
+  <!-- Large organic shapes for depth -->
+  <g opacity="0.1">
+    <!-- Top-left flowing shape -->
+    <path d="M0,0 Q300,100 400,0 L600,0 Q500,200 300,250 Q150,300 0,200 Z" fill="#ffffff"/>
+    
+    <!-- Top-right elegant curve -->
+    <path d="M1920,0 L1920,300 Q1800,350 1700,300 Q1600,250 1650,150 Q1750,50 1920,0" fill="#ffffff"/>
+    
+    <!-- Bottom-left modern wave -->
+    <path d="M0,800 Q200,750 300,800 Q400,850 350,950 Q250,1000 150,1050 L0,1080 Z" fill="#ffffff"/>
+    
+    <!-- Bottom-right sophisticated curve -->
+    <path d="M1500,900 Q1650,850 1800,900 Q1850,950 1920,930 L1920,1080 L1450,1080 Q1400,950 1500,900" fill="#ffffff"/>
+  </g>
+  
+  <!-- Central focus area with gentle glow -->
+  <ellipse cx="960" cy="540" rx="500" ry="350" fill="url(#centerGlow)"/>
+  
+  <!-- Floating geometric elements -->
+  <g opacity="0.08">
+    <!-- Floating rectangles representing documents/properties -->
+    <rect x="150" y="200" width="80" height="60" rx="8" fill="#ffffff" transform="rotate(-15 190 230)"/>
+    <rect x="300" y="150" width="60" height="80" rx="8" fill="#ffffff" transform="rotate(10 330 190)"/>
+    <rect x="1400" y="180" width="70" height="50" rx="8" fill="#ffffff" transform="rotate(-8 1435 205)"/>
+    <rect x="1600" y="220" width="50" height="70" rx="8" fill="#ffffff" transform="rotate(12 1625 255)"/>
+    
+    <rect x="200" y="750" width="90" height="50" rx="8" fill="#ffffff" transform="rotate(8 245 775)"/>
+    <rect x="400" y="800" width="60" height="80" rx="8" fill="#ffffff" transform="rotate(-12 430 840)"/>
+    <rect x="1300" y="780" width="80" height="60" rx="8" fill="#ffffff" transform="rotate(15 1340 810)"/>
+    <rect x="1500" y="820" width="70" height="70" rx="8" fill="#ffffff" transform="rotate(-5 1535 855)"/>
+  </g>
+  
+  <!-- Subtle connecting lines -->
+  <g opacity="0.06" stroke="#ffffff" stroke-width="1" fill="none">
+    <path d="M200,250 Q400,200 600,250"/>
+    <path d="M800,180 Q1000,150 1200,200"/>
+    <path d="M1350,220 Q1500,180 1650,220"/>
+    
+    <path d="M250,800 Q450,750 650,800"/>
+    <path d="M850,820 Q1050,780 1250,830"/>
+    <path d="M1350,850 Q1500,810 1650,860"/>
+  </g>
+  
+  <!-- Property boundary markers -->
+  <g opacity="0.12">
+    <circle cx="180" cy="120" r="3" fill="#ffffff"/>
+    <circle cx="320" cy="80" r="2.5" fill="#ffffff"/>
+    <circle cx="480" cy="100" r="3" fill="#ffffff"/>
+    <circle cx="680" cy="90" r="2" fill="#ffffff"/>
+    <circle cx="880" cy="110" r="3" fill="#ffffff"/>
+    <circle cx="1080" cy="95" r="2.5" fill="#ffffff"/>
+    <circle cx="1280" cy="105" r="3" fill="#ffffff"/>
+    <circle cx="1480" cy="85" r="2" fill="#ffffff"/>
+    <circle cx="1680" cy="115" r="3" fill="#ffffff"/>
+    
+    <circle cx="200" cy="950" r="3" fill="#ffffff"/>
+    <circle cx="400" cy="980" r="2.5" fill="#ffffff"/>
+    <circle cx="600" cy="960" r="3" fill="#ffffff"/>
+    <circle cx="800" cy="970" r="2" fill="#ffffff"/>
+    <circle cx="1000" cy="940" r="3" fill="#ffffff"/>
+    <circle cx="1200" cy="975" r="2.5" fill="#ffffff"/>
+    <circle cx="1400" cy="955" r="3" fill="#ffffff"/>
+    <circle cx="1600" cy="985" r="2" fill="#ffffff"/>
+    <circle cx="1800" cy="965" r="3" fill="#ffffff"/>
+  </g>
+  
+  <!-- Elegant curved lines for visual flow -->
+  <g opacity="0.08" fill="none" stroke="#ffffff" stroke-width="2">
+    <path d="M0,400 Q400,350 800,400 Q1200,450 1600,400 Q1800,375 1920,400"/>
+    <path d="M0,600 Q300,650 600,600 Q900,550 1200,600 Q1500,650 1920,600"/>
+    <path d="M0,800 Q200,750 400,800 Q600,850 800,800 Q1000,750 1200,800 Q1400,850 1600,800 Q1800,750 1920,800"/>
+  </g>
+  
+  <!-- Final overlay for depth -->
+  <rect width="1920" height="1080" fill="url(#overlayGradient)"/>
+  
+  <!-- Subtle radial highlights -->
+  <g opacity="0.05">
+    <circle cx="400" cy="300" r="150" fill="#ffffff"/>
+    <circle cx="1500" cy="250" r="120" fill="#ffffff"/>
+    <circle cx="300" cy="800" r="100" fill="#ffffff"/>
+    <circle cx="1600" cy="850" r="130" fill="#ffffff"/>
+  </g>
+</svg>

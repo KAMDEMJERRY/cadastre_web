@@ -1,6 +1,9 @@
 import { DEFAULT_USER } from "@/data/user";
 import { Parcelle } from "@/types/lotissement";
 
+
+
+
 export async function fetchUserParcelles(): Promise<Parcelle[]> {
   // Remplacez par un vrai appel API
   return [
