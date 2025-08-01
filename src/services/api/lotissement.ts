@@ -1,14 +1,25 @@
 import { Lotissement } from '@/types/lotissement';
+import { apiClient } from '../client';
 
-export async function fetchLotissements(): Promise<Lotissement[]> {
-  // Remplacer par un vrai appel API
-  return [
-    {
-      id: '1',
-      nom: 'Cité Verte',
-      adresse: 'Yaoundé',
-      dateCreation: '2023-01-15',
-    },
-    // Ajouter d'autres données mockées
-  ];
+export const LotissementService = {
+
+  async getByAdmin(): Promise<Lotissement[]> {
+    const response = await apiClient.get<Lotissement[]>(`/cadastre/lotissement`);
+    return response;
+  },
+
+  async postByAdmin(lotissementData: Omit<Lotissement, 'id'>): Promise<Lotissement> {
+    const response = await apiClient.post<Lotissement>(`/cadastre/lotissement`, lotissementData);
+    return response;
+  },
+
+  async updateByAdmin(id: number, lotissementData: Omit<Lotissement, 'id'>): Promise<Lotissement> {
+    const response = await apiClient.put<Lotissement>(`/cadastre/lotissement/${id}`, lotissementData);
+    return response;
+  },
+
+  async deleteByAdmin(id: number): Promise<void> {
+    await apiClient.delete(`/cadastre/lotissement/${id}`);
+  },
+
 }

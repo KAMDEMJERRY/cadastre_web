@@ -1,5 +1,5 @@
 import { API_BASE_URL } from '@/utils/constants/end_points';
-import { accountAPI } from './auth';
+import { accountAPI } from './api/auth';
 
 interface ApiClientConfig {
   baseUrl: string;

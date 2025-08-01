@@ -1,6 +1,6 @@
 import { User } from '@/types/user';
-import { LoginCredentials, LoginResponse } from './../../types/auth.d';
-import { apiClient } from './client';
+import { LoginCredentials, LoginResponse } from '../../types/auth';
+import { apiClient } from '../client';
 
 export const accountAPI = {
     async login(credentials: LoginCredentials): Promise<LoginResponse> {

@@ -1,49 +1,41 @@
-import { DEFAULT_USER } from "@/data/user";
-import { Parcelle } from "@/types/lotissement";
+import { Parcelle } from "@/types/parcelle";
+import { apiClient } from "../client";
 
 
+export const parcelleService = {
+  
+  async getByProprietaire(): Promise<Parcelle[]> {
+    const response = await apiClient.get<Parcelle[]>('/cadastre/parcelle');  
+    return response;
+  },
+
+  async  getByProprietaireAndParcelleId(id: number): Promise<Parcelle> {
+    const response = await apiClient.get<Parcelle>(`/cadastre/parcelle/${id}`);
+    return response;
+  },
+
+  // Methodes pour l'admin
+  async getByAdmin(): Promise<Parcelle[]>{
+      const response = await apiClient.get<Parcelle[]>(`/cadastre/parcelle`);
+      return response;
+  },
+  
+  async postByAdmin(parcelleData: Omit<Parcelle, 'id'>): Promise<Parcelle>{
+      const  response = await apiClient.post<Parcelle>(`/cadastre/parcelle`, parcelleData);
+      return response;
+  },
+  
+  async updateByAdmin(id: number, parcelleData: Omit<Parcelle, 'id'>): Promise<Parcelle> {
+    const response = await apiClient.put<Parcelle>(`/cadastre/parcelle/${id}`, parcelleData);
+    return response;
+  },
+
+  async deleteByAdmin(id: number): Promise<void> {
+    await apiClient.delete(`/cadastre/parcelle/${id}`);
+  },
 
 
-export async function fetchUserParcelles(): Promise<Parcelle[]> {
-  // Remplacez par un vrai appel API
-  return [
-    {
-      id: '1',
-      numero: 'P001',
-      lotissement: 'Cité Verte',
-      bloc: 'Bloc A',
-      superficie: 500,
-      perimetre: 90,
-      coordinates: [],
-      proprietaire: DEFAULT_USER
-    },
-    // ... autres parcelles
-  ];
 }
 
 
-export async function fetchParcelleById(id: string): Promise<Parcelle> {
-  // Remplacer par un vrai appel API
-  return {
-    id,
-    numero: 'P001',
-    lotissement: 'Cité Verte',
-    bloc: 'Bloc A',
-    superficie: 500,
-    perimetre: 90,
-    coordinates: [
-      [3.848, 11.502],
-      [3.8485, 11.5025],
-      [3.8485, 11.503],
-      [3.848, 11.503],
-    ],
-    proprietaire: {
-      id: 'prop-1',
-      username: 'Jean-Pierre KAMGANG',
-      firstname: 'Jean-Pierre',
-      lastname: 'KAMGANG',
-      email: 'jeanpierre@example.com',
-      role: 'proprietaire'
-    },
-  };
-}
+ 

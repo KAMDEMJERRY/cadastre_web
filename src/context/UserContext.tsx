@@ -4,7 +4,7 @@
 import { createContext, ReactNode, useState, useEffect } from 'react';
 import { User } from '@/types/user';
 import { accountAPI } from '@/services/api/auth';
-import { LoginCredentials } from '@/types/auth.d';
+import { LoginCredentials } from '@/types/auth';
 
 type UserContextType = {
   user: User | null;

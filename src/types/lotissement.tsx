@@ -1,35 +1,12 @@
-import { User } from "./user";
+import { Bloc } from "./bloc";
+import { BaseGeometry } from "./geometry";
 
-// Types de base
-export interface BaseGeometry {
-  id?: number;
-  longeur?: number;
-  superficie_m2: number;
-  perimetre_m: number;
-  geom?: GeoJSON.Polygon | null;
-  created_at?: string;
-  updated_at?: string;
-}
 
 // Modèle Lotissement
 export interface Lotissement extends BaseGeometry {
   name: string;
   addresse?: string;
   description?: string;
-}
-
-// Modèle Bloc
-export interface Bloc extends BaseGeometry {
-  name?: string;
-  bloc_lotissement: number | Lotissement; // ID ou objet complet
-  description?: string;
-}
-
-// Modèle Parcelle
-export interface Parcelle extends BaseGeometry {
-  name?: string;
-  parcelle_bloc: number | Bloc; // ID ou objet complet
-  proprietaire: number | User; // ID ou objet complet
 }
 
 // Modèle Rue
@@ -43,18 +20,6 @@ export interface LotissementDetailed extends Omit<Lotissement, 'id'> {
   blocs?: Bloc[];
 }
 
-export interface BlocDetailed extends Omit<Bloc, 'id' | 'bloc_lotissement'> {
-  id: number;
-  bloc_lotissement: Lotissement;
-  parcelles?: Parcelle[];
-}
-
-export interface ParcelleDetailed extends Omit<Parcelle, 'id' | 'parcelle_bloc' | 'proprietaire'> {
-  id: number;
-  parcelle_bloc: Bloc;
-  proprietaire: User;
-}
-
 // Types pour les formulaires (création/modification)
 export interface LotissementForm {
   name: string;
@@ -66,25 +31,7 @@ export interface LotissementForm {
   geom?: GeoJSON.Polygon;
 }
 
-export interface BlocForm {
-  name?: string;
-  bloc_lotissement: number;
-  description?: string;
-  longeur?: number;
-  superficie_m2: number;
-  perimetre_m: number;
-  geom?: GeoJSON.Polygon;
-}
 
-export interface ParcelleForm {
-  name?: string;
-  parcelle_bloc: number;
-  proprietaire: number;
-  longeur?: number;
-  superficie_m2: number;
-  perimetre_m: number;
-  geom?: GeoJSON.Polygon;
-}
 
 export interface RueForm {
   name: string;
@@ -110,20 +57,6 @@ export interface LotissementFilters {
   superficie_max?: number;
 }
 
-export interface BlocFilters {
-  name?: string;
-  bloc_lotissement?: number;
-  superficie_min?: number;
-  superficie_max?: number;
-}
-
-export interface ParcelleFilters {
-  name?: string;
-  parcelle_bloc?: number;
-  proprietaire?: number;
-  superficie_min?: number;
-  superficie_max?: number;
-}
 
 export interface RueFilters {
   name?: string;
@@ -131,29 +64,4 @@ export interface RueFilters {
   superficie_max?: number;
 }
 
-// Type pour les erreurs API
-export interface ApiError {
-  message: string;
-  field?: string;
-  code?: string;
-}
 
-// Type pour les réponses d'erreur
-export interface ErrorResponse {
-  errors: ApiError[];
-  detail?: string;
-}
-
-// Types utilitaires pour les sélecteurs
-export interface SelectOption {
-  value: number;
-  label: string;
-}
-
-// Type pour les statistiques (optionnel)
-export interface GeometryStats {
-  total_superficie: number;
-  total_perimetre: number;
-  moyenne_superficie: number;
-  count: number;
-}
