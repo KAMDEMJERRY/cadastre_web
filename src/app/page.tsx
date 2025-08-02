@@ -1,48 +1,56 @@
 import Link from "next/link";
 import { metadata } from "@/app/layout";
+import { Button } from "@/components/ui/button";
+import {  Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default function Home() {
+
+export default function Home(){
   return (
-    <div 
-      className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20"
+    <div
+      className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-slate-50 dark:bg-slate-950"
       style={{
-        backgroundImage: `url('assets/connexion_bg.svg')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed'
+        // backgroundImage = `url('/background.svg')`,
       }}
-    >
-      {/* Overlay léger pour améliorer la lisibilité si nécessaire */}
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-[1px]"></div>
-      
-      <main className="flex flex-col gap-8 row-start-2 items-center relative z-10">
-        {/* Logo emoji remplaçant l'image */}
-        <div className="text-8xl mb-4">
-          🏘️
-        </div>
+    >   
+        {/* Overlay (fond floute) pour ameliorer la lisibilite avec le theme slate */}
+        <div className="absolute inset-0 bg-white/5 dark:bg-slate-950/20 backdrop-blur-[1px]"></div>
         
-        <h1 className="text-2xl font-bold text-center text-gray-800">
-          Bienvenue sur {String(metadata.title ?? "CadastreWeb")}
-        </h1>
-
-        <p className="text-center max-w-md text-gray-700">
-          Administrez et consultez vos donnees cadastrales.
-        </p>
-        
-        <div className="flex gap-4">
-          <Link
-            href="/accounts/login"
-            className="rounded-full bg-indigo-600 text-white px-6 py-3 hover:bg-indigo-700 transition-colors font-medium shadow-lg hover:shadow-xl"
-          >
-            Se connecter
-          </Link>
-        </div>
-      </main>
-      
-      <footer className="row-start-3 text-sm text-gray-600 dark:text-gray-400 relative z-10">
-        © {new Date().getFullYear()} Mon Application. Tous droits réservés.
-      </footer>
+        <main className="flex flex-col gap-8 row-start-2 items-center relative z-10 max-w-2xl mx-auto">
+              {/* Card principale avec component shadcn */}
+              <Card className="w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-slate-200 dark:border-slate-800 shadow-2xl">
+                <CardHeader className="text-center pb-6">
+                  {/* Logo emoji */}
+                  <div className="text-6xl mb-4 mx-auto">
+                    🏘️
+                  </div>
+                  <CardTitle className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                    Bienvenue
+                  </CardTitle>
+                  <CardDescription className="text-lg font-medium text-slate-700 dark:text-slate-300">
+                        sur {String(metadata.title ?? "CadastreWeb")}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6 text-center">
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Administrez et consultez vos donnees cadastrales de manieres simple et efficace
+                  </p>
+                  <div className="pt-4">
+                      <Button
+                        asChild
+                        size="lg"
+                        className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:hover:bg-slate-200 dark:text-slate-900 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                      >
+                        <Link href="accounts/login">
+                        Se Connecter
+                        </Link>
+                      </Button>
+                  </div>
+                </CardContent>
+              </Card>
+        </main>
+        <footer className="row-start-3 text-sm text-slate-600 dark:text-slate-400 relative z-10 text-center">
+            <p>© {new Date().getFullYear()} Mon Appplication. Tous droits reserves.</p>
+        </footer>
     </div>
   );
 }
