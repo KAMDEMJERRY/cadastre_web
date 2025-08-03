@@ -3,6 +3,8 @@ import { metadata } from "@/app/layout";
 import { Button } from "@/components/ui/button";
 import {  Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+const Admin =  "dashboard/admin";
+const Login = "login";
 
 export default function Home(){
   return (
@@ -40,7 +42,10 @@ export default function Home(){
                         size="lg"
                         className="w-full bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:hover:bg-slate-200 dark:text-slate-900 text-white shadow-lg hover:shadow-xl transition-all duration-200"
                       >
-                        <Link href="accounts/login">
+                        <Link 
+                        
+                        href={Login}
+                        >
                         Se Connecter
                         </Link>
                       </Button>
