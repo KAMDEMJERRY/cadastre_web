@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
-import { ParcelleProprietaire, FilterOptions } from "@/types/proprietaire";
+import { ParcelleProprietaire, FilterOptions } from "@/types/ui/proprietaire";
 import ParcelleCard from "./ParcelleCard";
 import { useMemo } from "react";
 

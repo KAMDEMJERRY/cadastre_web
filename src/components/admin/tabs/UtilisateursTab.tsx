@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { UserPlus, Eye, Edit, Trash2 } from "lucide-react";
-import { UtilisateurData } from "@/types/dashboard";
+import { UtilisateurData } from "@/types/ui/dashboard";
 import { getStatutBadge } from "@/utils/badge-variants";
 
 interface UtilisateursTabProps {

@@ -31,7 +31,19 @@ export interface LotissementForm {
   geom?: GeoJSON.Polygon;
 }
 
+export interface APILotissementResponse{
+  type: string;
+  count: number;
+  next?: string;
+  previous?: string;
+  feature: APILotissementFeature[];
+}
 
+export interface APILotissementFeature{
+  id: number;
+  properties: Omit<Lotissement, 'id'>;
+  type: string;
+}
 
 export interface RueForm {
   name: string;

@@ -1,7 +1,7 @@
 // pages/proprietaire/dashboard.tsx - Version complète
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ProprietaireHeader from '@/components/proprietaire/ProprietaireHeader';
 import ProprietaireStats from '@/components/proprietaire/ProprietaireStats';
@@ -14,9 +14,15 @@ import {
   mockStats, 
   mockLotissements 
 } from '@/data/proprietaireMockData';
-import { FilterOptions, ParcelleProprietaire } from '@/types/proprietaire';
+import { FilterOptions, ParcelleProprietaire } from '@/types/ui/proprietaire';
+import { useUser } from '@/hooks/useUser';
+import { mapUserToProprietaire } from '@/utils/mappers/userMapper';
+import { useParcellesProprietaire } from '@/hooks/useParcellesProprietaire';
+import { mapParcelleDataToStatProprietaires, mapParcellesToParcelleData } from '@/utils/mappers/parcelleMapper';
 
 export default function ProprietaireDashboard() {
+  const {user, logout} = useUser();
+  const {data:parcelles} = useParcellesProprietaire();
   const router = useRouter();
   const [filters, setFilters] = useState<FilterOptions>({
     lotissement: '',
@@ -24,14 +30,28 @@ export default function ProprietaireDashboard() {
     search: '',
     statut: ''
   });
-  
+  const [parcellesData, setParcellesData] = useState<ParcelleProprietaire[]>(mockParcelles);
   const [selectedParcelle, setSelectedParcelle] = useState<ParcelleProprietaire | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [stats, setStats] = useState(mockStats);
+  useEffect(()=>{
+    const mapParcellesToUI = async () => {
+       const result = await mapParcellesToParcelleData(parcelles || []);
+       setParcellesData(result);
+    };
+    mapParcellesToUI();
+    return () => setParcellesData([]); // Nettoyage
+  }, [parcelles]);
+
+  useEffect(()=>{
+    setStats(mapParcelleDataToStatProprietaires(parcellesData))
+  },[parcellesData]);
 
   const handleLogout = () => {
     if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
       // Logique de déconnexion ici
       // localStorage.removeItem('token'); // Exemple
+      logout();
       router.push('/login');
     }
   };
@@ -80,23 +100,25 @@ export default function ProprietaireDashboard() {
   return (
     <div className="min-h-screen bg-slate-50">
       <ProprietaireHeader 
-        profile={mockProprietaireProfile}
+        profile={mapUserToProprietaire(user)}
         onLogout={handleLogout}
       />
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-6 py-8">
+        
         {/* En-tête du dashboard */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-slate-900 mb-2">
-            Mes Parcelles
-          </h2>
-          <p className="text-lg text-slate-600">
-            Gérez et consultez vos propriétés cadastrales
-          </p>
-        </div>
+         <div className="mb-8">
+           <h2 className="text-3xl font-bold text-slate-900 mb-2">
+             Mes Parcelles
+           </h2>
+           <p className="text-lg text-slate-600">
+             Gérez et consultez vos propriétés cadastrales
+           </p>
+         </div>
 
+        
         {/* Statistiques */}
-        <ProprietaireStats stats={mockStats} />
+        <ProprietaireStats stats={stats} />
 
         {/* Filtres */}
         <ProprietaireFilters 
@@ -106,8 +128,9 @@ export default function ProprietaireDashboard() {
         />
 
         {/* Grille des parcelles */}
+
         <ParcellesGrid 
-          parcelles={mockParcelles}
+          parcelles={parcellesData}
           filters={filters}
           onViewDetails={handleViewDetails}
           onViewMap={handleViewMap}
@@ -127,3 +150,10 @@ export default function ProprietaireDashboard() {
     </div>
   );
 }
+
+
+
+
+
+  
+    //   </div>

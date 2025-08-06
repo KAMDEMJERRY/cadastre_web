@@ -1,102 +1,112 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// ==========================================
-// 1. HOOK useAPI GÉNÉRIQUE
-// ==========================================
-
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface UseAPIOptions<T> {
-  immediate?: boolean // Exécuter immédiatement au mount
-  dependencies?: any[] // Dépendances pour re-fetch automatique
-  onSuccess?: (data: T) => void
-  onError?: (error: Error) => void
-  transform?: (data: any) => T ; // Transformer les données reçues
+  immediate?: boolean;
+  dependencies?: unknown[];
+  onSuccess?: (data: T) => void;
+  onError?: (error: Error) => void;
+  transform?: (data: unknown) => T;
 }
 
-interface UseAPIReturn<T> {
-  data: T | null
-  loading: boolean
-  error: string | null
-  execute: (...args: any[]) => Promise<T>
-  refresh: () => Promise<T>
-  reset: () => void
+export interface UseAPIReturn<T> {
+  data: T | null;
+  loading: boolean;
+  error: string | null;
+  execute: (...args: unknown[]) => Promise<T>;
+  refresh: () => Promise<T>;
+  reset: () => void;
 }
 
-export function useAPI<T = any>(
-  apiFunction: (...args: any[]) => Promise<T>,
+export function useAPI<T = unknown>(
+  apiFunction: (...args: unknown[]) => Promise<T>,
   options: UseAPIOptions<T> = {}
 ): UseAPIReturn<T> {
+ 
   const {
     immediate = false,
     dependencies = [],
     onSuccess,
     onError,
     transform
-  } = options
+  } = options;
 
-  const [data, setData] = useState<T | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
-  // Garder une référence aux derniers arguments utilisés
-  const lastArgsRef = useRef<any[]>([])
-  const mountedRef = useRef(true)
+  const lastArgsRef = useRef<unknown[]>([]);
+  const mountedRef = useRef(true);
 
-  const execute = useCallback(async (...args: any[]): Promise<T> => {
+  const execute = useCallback(async (...args: unknown[]): Promise<T> => {
+
+    if (!mountedRef.current){ 
+      console.warn('Component unmounted, skipping API call');
+      return Promise.reject(new Error('Component unmounted'));
+    }
+
     try {
-      setLoading(true)
-      setError(null)
-      lastArgsRef.current = args
+      
+      if(mountedRef.current) {
+        setLoading(true);
+        setError(null);
+      }
+      lastArgsRef.current = args;
 
-      const result = await apiFunction(...args)
-      const transformedData = transform ? transform(result) : result
-
+      const result = await apiFunction(...args);
+      const transformedData = transform ? transform(result) : result;
+      console.log('API call successful:', transformedData);
       if (mountedRef.current) {
-        setData(transformedData)
-        onSuccess?.(transformedData)
+        setData(transformedData);
+        onSuccess?.(transformedData);
       }
 
-      return transformedData
+      return transformedData;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue'
+      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
       
       if (mountedRef.current) {
-        setError(errorMessage)
-        onError?.(err as Error)
+        setError(errorMessage);
+        onError?.(err as Error);
       }
       
-      throw err
+      throw err;
     } finally {
       if (mountedRef.current) {
-        setLoading(false)
+        setLoading(false);
       }
     }
-  }, [apiFunction, transform, onSuccess, onError])
+  }, [apiFunction, transform, onSuccess, onError]);
 
   const refresh = useCallback(() => {
-    return execute(...lastArgsRef.current)
-  }, [execute])
+    return execute(...lastArgsRef.current);
+  }, [execute]);
 
   const reset = useCallback(() => {
-    setData(null)
-    setError(null)
-    setLoading(false)
-  }, [])
+    setData(null);
+    setError(null);
+    setLoading(false);
+  }, []);
 
-  // Exécution immédiate ou sur changement des dépendances
+  useEffect(() => {
+    console.log('Component mounted');
+    
+    return () => {
+      console.log('Component will unmount');
+    };
+  }, []);
+
+
   useEffect(() => {
     if (immediate) {
-      execute()
+      execute();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [immediate, ...dependencies])
+  }, [immediate]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      mountedRef.current = false
-    }
-  }, [])
+      mountedRef.current = false;
+    };
+  }, []);
 
   return {
     data,
@@ -105,5 +115,5 @@ export function useAPI<T = any>(
     execute,
     refresh,
     reset
-  }
+  };
 }

@@ -49,13 +49,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, []);
 
 const handleLogin = async (credentials: LoginCredentials) => {
+  console.log("UseProvider: Hello world");
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  setUser(null);
+  
   setLoading(true);
   setError(null);
   
   try {
+    console.log("UseProvider- handleLogin-try: Hello world");
+
     // 1. Authentification (obtention des tokens)
     const loginResponse = await accountAPI.login(credentials);
-    console.log("Login successful:", loginResponse);
+    console.log("Login successful:"+loginResponse);
     
     
     // 3. Petit délai pour s'assurer que le token est bien disponible
@@ -63,27 +70,26 @@ const handleLogin = async (credentials: LoginCredentials) => {
     
     // 4. Récupération du profil utilisateur avec le nouveau token
     const userProfile = await accountAPI.getProfile();
-    console.log("User profile:", userProfile);
     
+
     // 5. Mise à jour de l'état avec les données utilisateur
     setUser(userProfile);
     
-    // return { success: true, user: userProfile };
-    
+    window.location.href = userProfile.role === 'admin' 
+      ? '/dashboard/admin' 
+      : '/dashboard/proprietaire';
+
   } catch (err) {
     console.error("Login error:", err);
     
     // Nettoyer les tokens en cas d'erreur
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    
+    setUser(null);
     const errorMessage = err instanceof Error ? err.message : 'Login failed';
     setError(errorMessage);
     
-    // Ne pas re-throw l'erreur ici si vous voulez gérer l'erreur dans le composant
-    // throw new Error(errorMessage);
-    
-    // return { success: false, error: errorMessage };
+
     
   } finally {
     setLoading(false);

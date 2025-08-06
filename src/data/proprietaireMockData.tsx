@@ -1,5 +1,5 @@
 // data/proprietaireMockData.ts
-import { ProprietaireProfile, ParcelleProprietaire, StatsProprietaire } from "@/types/proprietaire";
+import { ProprietaireProfile, ParcelleProprietaire, StatsProprietaire } from "@/types/ui/proprietaire";
 
 export const mockProprietaireProfile: ProprietaireProfile = {
   id: "usr_001",
@@ -7,7 +7,7 @@ export const mockProprietaireProfile: ProprietaireProfile = {
   cni: "123456789",
   nom: "Jean-Pierre KAMGANG",
   email: "jp.kamgang@email.cm",
-  type: "privé",
+  type: "IND",
   role: "proprietaire",
   status: "actif"
 };

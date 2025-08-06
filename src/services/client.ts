@@ -144,5 +144,5 @@ class ApiError extends Error {
 // Instance API configurée
 export const apiClient = new ApiClient({
   baseUrl: API_BASE_URL,
-  timeout: 15000,
+  timeout: 30000,
 });

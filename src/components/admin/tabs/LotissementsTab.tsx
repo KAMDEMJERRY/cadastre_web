@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus, Eye, Edit, Map } from "lucide-react";
-import { LotissementData } from "@/types/dashboard";
+import { LotissementData } from "@/types/ui/dashboard";
 import { getStatutBadge } from "@/utils/badge-variants";
 
 interface LotissementsTabProps {

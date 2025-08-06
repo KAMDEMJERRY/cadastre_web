@@ -2,7 +2,6 @@
 'use client';
 
 import { useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,12 +10,12 @@ import { useUser } from '@/hooks/useUser';
 export default function AuthForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const { user, login } = useUser();
-  const router = useRouter();
+  const {login } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+  
       if (!formRef.current || !buttonRef.current) return;
 
       const formData = new FormData(formRef.current);
@@ -31,16 +30,8 @@ export default function AuthForm() {
 
       buttonRef.current.textContent = 'Connexion en cours...';
       buttonRef.current.disabled = true;
-
+      console.log("Hello : Auth Form");
       await login(credentials);
-
-      if (user?.role === 'admin') {
-        router.push('/dashboard/admin');
-      } else if (user?.role === 'proprietaire') {
-        router.push('/dashboard/proprietaire');
-      } else {
-        throw new Error('Erreur de connexion: Role inconnu\nVeuillez contacter l\'administrateur.');
-      }
 
     } catch (error) {
       console.error('Login error:', error);

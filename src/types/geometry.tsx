@@ -1,10 +1,10 @@
 // Types de base
 export interface BaseGeometry {
-  id?: number;
+  id: number;
   longeur?: number;
   superficie_m2: number;
   perimetre_m: number;
-  geom?: GeoJSON.Polygon | null;
+  geometry?: GeoJSON.Polygon | null;
   created_at?: string;
   updated_at?: string;
 }

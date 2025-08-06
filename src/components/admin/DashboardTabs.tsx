@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Filter } from "lucide-react";
-import { LotissementData, ParcelleData, UtilisateurData, ActivityData } from "@/types/dashboard";
+import { LotissementData, ParcelleData, UtilisateurData, ActivityData } from "@/types/ui/dashboard";
 import LotissementsTab from "./tabs/LotissementsTab";
 import ParcellesTab from "./tabs/ParcellesTab";
 import UtilisateursTab from "./tabs/UtilisateursTab";

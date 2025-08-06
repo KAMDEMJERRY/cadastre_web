@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, MapPin, FileText } from "lucide-react";
-import { ParcelleProprietaire } from "@/types/proprietaire";
+import { ParcelleProprietaire } from "@/types/ui/proprietaire";
 
 interface ParcelleCardProps {
   parcelle: ParcelleProprietaire;
@@ -86,7 +86,7 @@ export default function ParcelleCard({
         <div className="flex gap-2 mt-4">
           <Button 
             onClick={() => onViewDetails(parcelle)}
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+            className="flex-1 bg-slate-600 hover:bg-blue-700 text-white"
             size="sm"
           >
             <Eye className="h-4 w-4 mr-2" />

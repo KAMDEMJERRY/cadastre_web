@@ -25,7 +25,7 @@ export interface BlocForm {
   longeur?: number;
   superficie_m2: number;
   perimetre_m: number;
-  geom?: GeoJSON.Polygon;
+  geometry?: GeoJSON.Polygon;
 }
 
 
@@ -34,4 +34,19 @@ export interface BlocFilters {
   bloc_lotissement?: number;
   superficie_min?: number;
   superficie_max?: number;
+}
+
+
+export interface APIBlocResponse{
+  type: string;
+  count: number;
+  next?: string;
+  previous?: string;
+  feature: APIBlocFeature[];
+}
+
+export interface APIBlocFeature{
+  id: number;
+  properties: Omit<Bloc, 'id'>;
+  type: string;
 }

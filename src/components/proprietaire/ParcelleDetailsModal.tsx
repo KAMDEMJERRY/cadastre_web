@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, FileText, Download, X } from "lucide-react";
-import { ParcelleProprietaire } from "@/types/proprietaire";
+import { ParcelleProprietaire } from "@/types/ui/proprietaire";
 
 interface ParcelleDetailsModalProps {
   parcelle: ParcelleProprietaire | null;

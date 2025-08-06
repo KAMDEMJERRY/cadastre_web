@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Users, MapPin, Layers } from "lucide-react";
-import { StatsData } from "@/types/dashboard";
+import { StatsData } from "@/types/ui/dashboard";
 
 interface StatsCardsProps {
   stats: StatsData;

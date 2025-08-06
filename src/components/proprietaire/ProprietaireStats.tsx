@@ -1,7 +1,7 @@
 // components/proprietaire/ProprietaireStats.tsx
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Layers, Home, CheckCircle } from "lucide-react";
-import { StatsProprietaire } from "@/types/proprietaire";
+import { StatsProprietaire } from "@/types/ui/proprietaire";
 
 interface ProprietaireStatsProps {
   stats: StatsProprietaire;

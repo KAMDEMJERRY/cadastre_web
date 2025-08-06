@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+// import { Geist } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@/context/UserContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// const geistSans = Geist({
+//   variable: "--font-geist-sans",
+//   subsets: ["latin"],
+// });
 
 
 
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={` ${geistSans.variable} antialiased`}
+        className={`  antialiased`}
       >
         <UserProvider>
             {children}

@@ -23,7 +23,7 @@ export interface ParcelleForm {
   longeur?: number;
   superficie_m2: number;
   perimetre_m: number;
-  geom?: GeoJSON.Polygon;
+  geometry?: GeoJSON.Polygon;
 }
 
 export interface ParcelleFilters {
@@ -33,3 +33,19 @@ export interface ParcelleFilters {
   superficie_min?: number;
   superficie_max?: number;
 }
+
+export interface APIParcelleResponse{
+  type: string;
+  count: number;
+  next?:string;
+  previous?: string;
+  features: APIParcelleFeature[];
+}
+
+export interface APIParcelleFeature {
+  id: number;
+  properties: Omit<Parcelle, 'id'>;
+  type: string;
+}
+
+

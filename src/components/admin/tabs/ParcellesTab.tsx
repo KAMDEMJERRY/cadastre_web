@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus, Upload, Eye, Edit, FileText } from "lucide-react";
-import { ParcelleData } from "@/types/dashboard";
+import { ParcelleData } from "@/types/ui/dashboard";
 import { getStatutBadge } from "@/utils/badge-variants";
 
 interface ParcellesTabProps {

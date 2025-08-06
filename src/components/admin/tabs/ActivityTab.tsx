@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Activity, MoreVertical } from "lucide-react";
-import { ActivityData } from "@/types/dashboard";
+import { ActivityData } from "@/types/ui/dashboard";
 
 interface ActivityTabProps {
   activities: ActivityData[];

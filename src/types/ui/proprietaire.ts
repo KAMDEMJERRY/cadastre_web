@@ -1,13 +1,14 @@
+import { AccountType, UserRole } from "../user";
+
 // types/proprietaire.ts
 export interface ProprietaireProfile {
-  id: string;
-  idCadastrale: string;
-  cni: string;
+  idCadastrale: string | undefined;
+  cni: string | null | undefined;
   nom: string;
   email: string;
-  type: 'public' | 'privé';
-  role: 'proprietaire';
-  status: 'actif' | 'inactif' | 'suspendu';
+  type: AccountType;
+  role: UserRole;
+  status: boolean;
 }
 
 export interface ParcelleProprietaire {
@@ -22,12 +23,8 @@ export interface ParcelleProprietaire {
   };
   superficie: number;
   perimetre: number;
-  statut: 'actif' | 'en_attente' | 'suspendu';
   planLocalisation?: string;
-  geometrie?: {
-    coordinates: number[][];
-    type: string;
-  };
+  geometrie?: GeoJSON.Polygon,
   localisation: {
     pays: string;
     region: string;

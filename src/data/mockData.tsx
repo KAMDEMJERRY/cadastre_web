@@ -11,7 +11,7 @@ import {
   UtilisateurData, 
   ActivityData, 
   StatsData 
-} from "@/types/dashboard";
+} from "@/types/ui/dashboard";
 
 export const mockStats: StatsData = {
   totalLotissements: 12,
