@@ -5,7 +5,12 @@ export interface LotissementData {
   adresse: string;
   nombreBlocs: number;
   nombreParcelles: number;
+  description: string;
   dateCreation: string;
+  longueur: number | null;
+  superficie_m2: number | null;
+  perimetre_m: number | null;
+  geom?: GeoJSON.Polygon | null; // Optional geometry field
   statut: 'actif' | 'en_cours' | 'suspendu';
 }
 
@@ -19,6 +24,12 @@ export interface ParcelleData {
   statut: 'libre' | 'vendue' | 'reservee';
 }
 
+
+export interface ProfileAdministrateur{
+  idCadastrale: string;
+  nom: string;
+  email: string;
+}
 export interface UtilisateurData {
   id: number;
   nom: string;

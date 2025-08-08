@@ -36,7 +36,7 @@ export interface APILotissementResponse{
   count: number;
   next?: string;
   previous?: string;
-  feature: APILotissementFeature[];
+  features: APILotissementFeature[];
 }
 
 export interface APILotissementFeature{

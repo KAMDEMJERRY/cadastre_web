@@ -25,32 +25,44 @@ export const mockStats: StatsData = {
 };
 
 export const mockLotissements: LotissementData[] = [
-  { 
-    id: 1, 
-    nom: "Les Jardins de Yaoundé", 
-    adresse: "Quartier Essos", 
-    nombreBlocs: 8, 
-    nombreParcelles: 240, 
-    dateCreation: "2024-01-15", 
-    statut: "actif" 
+  {
+    id: 1,
+    nom: "Les Jardins de Yaoundé",
+    adresse: "Quartier Essos",
+    nombreBlocs: 8,
+    nombreParcelles: 240,
+    dateCreation: "2024-01-15",
+    statut: "actif",
+    description: "",
+    longueur: null,
+    superficie_m2: null,
+    perimetre_m: null
   },
-  { 
-    id: 2, 
-    nom: "Résidence Mont Fébé", 
-    adresse: "Mont Fébé", 
-    nombreBlocs: 6, 
-    nombreParcelles: 180, 
-    dateCreation: "2024-02-20", 
-    statut: "en_cours" 
+  {
+    id: 2,
+    nom: "Résidence Mont Fébé",
+    adresse: "Mont Fébé",
+    nombreBlocs: 6,
+    nombreParcelles: 180,
+    dateCreation: "2024-02-20",
+    statut: "en_cours",
+    description: "",
+    longueur: null,
+    superficie_m2: null,
+    perimetre_m: null
   },
-  { 
-    id: 3, 
-    nom: "Cité Verte Mvog-Ada", 
-    adresse: "Mvog-Ada", 
-    nombreBlocs: 10, 
-    nombreParcelles: 320, 
-    dateCreation: "2023-11-10", 
-    statut: "actif" 
+  {
+    id: 3,
+    nom: "Cité Verte Mvog-Ada",
+    adresse: "Mvog-Ada",
+    nombreBlocs: 10,
+    nombreParcelles: 320,
+    dateCreation: "2023-11-10",
+    statut: "actif",
+    description: "",
+    longueur: null,
+    superficie_m2: null,
+    perimetre_m: null
   },
 ];
 
@@ -152,3 +164,9 @@ export const mockActivities: ActivityData[] = [
     icon: FileText 
   },
 ];
+
+export const mockAdministrateurProfile = {
+  idCadastrale: "AD-001",
+  nom: "Brice Chancel Ndomboukamdem",
+  email: " admin@example.com"
+}

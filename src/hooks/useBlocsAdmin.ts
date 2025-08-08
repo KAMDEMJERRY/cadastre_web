@@ -1,8 +1,16 @@
 import { blocService } from "@/services/api/blocs";
 import { useAPI } from "./useApi";
 import { Bloc } from "@/types/bloc";
+import { BlocContext } from "@/context/BlocContext";
+import { useContext } from "react";
 
-
+export const useBlocs = ()=>{
+  const context = useContext(BlocContext);
+  if(context == undefined){
+    throw new Error('BlocContext must be used within a use Provider');
+  }
+  return context;
+}
 
 export function useBlocAdmin(){
     return useAPI<Bloc[]>(

@@ -1,7 +1,7 @@
 // pages/proprietaire/dashboard.tsx - Version complète
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ProprietaireHeader from '@/components/proprietaire/ProprietaireHeader';
 import ProprietaireStats from '@/components/proprietaire/ProprietaireStats';
@@ -17,12 +17,13 @@ import {
 import { FilterOptions, ParcelleProprietaire } from '@/types/ui/proprietaire';
 import { useUser } from '@/hooks/useUser';
 import { mapUserToProprietaire } from '@/utils/mappers/userMapper';
-import { useParcellesProprietaire } from '@/hooks/useParcellesProprietaire';
-import { mapParcelleDataToStatProprietaires, mapParcellesToParcelleData } from '@/utils/mappers/parcelleMapper';
+import { mapParcelleDataToStatProprietaires } from '@/utils/mappers/parcelleMapper';
+import { useParcellesMapping } from '@/hooks/useParcellesMapping';
 
 export default function ProprietaireDashboard() {
   const {user, logout} = useUser();
-  const {data:parcelles} = useParcellesProprietaire();
+  
+  const { parcellesData } = useParcellesMapping();
   const router = useRouter();
   const [filters, setFilters] = useState<FilterOptions>({
     lotissement: '',
@@ -30,27 +31,12 @@ export default function ProprietaireDashboard() {
     search: '',
     statut: ''
   });
-  const [parcellesData, setParcellesData] = useState<ParcelleProprietaire[]>(mockParcelles);
   const [selectedParcelle, setSelectedParcelle] = useState<ParcelleProprietaire | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [stats, setStats] = useState(mockStats);
-  useEffect(()=>{
-    const mapParcellesToUI = async () => {
-       const result = await mapParcellesToParcelleData(parcelles || []);
-       setParcellesData(result);
-    };
-    mapParcellesToUI();
-    return () => setParcellesData([]); // Nettoyage
-  }, [parcelles]);
-
-  useEffect(()=>{
-    setStats(mapParcelleDataToStatProprietaires(parcellesData))
-  },[parcellesData]);
+  const stats = useMemo(() => mapParcelleDataToStatProprietaires(parcellesData ?? []), [parcellesData]);
 
   const handleLogout = () => {
     if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
-      // Logique de déconnexion ici
-      // localStorage.removeItem('token'); // Exemple
       logout();
       router.push('/login');
     }
@@ -130,7 +116,7 @@ export default function ProprietaireDashboard() {
         {/* Grille des parcelles */}
 
         <ParcellesGrid 
-          parcelles={parcellesData}
+          parcelles={parcellesData ?? []}
           filters={filters}
           onViewDetails={handleViewDetails}
           onViewMap={handleViewMap}

@@ -9,6 +9,7 @@ import ParcellesTab from "./tabs/ParcellesTab";
 import UtilisateursTab from "./tabs/UtilisateursTab";
 import ActivityTab from "./tabs/ActivityTab";
 import ToolsTab from "./tabs/ToolsTab";
+import { Lotissement } from "@/types/lotissement";
 
 interface DashboardTabsProps {
   lotissements: LotissementData[];
@@ -54,7 +55,7 @@ export default function DashboardTabs({
       </div>
 
       <TabsContent value="lotissements">
-        <LotissementsTab lotissements={lotissements} />
+        <LotissementsTab  />
       </TabsContent>
 
       <TabsContent value="parcelles">

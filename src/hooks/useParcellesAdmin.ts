@@ -1,6 +1,18 @@
 import { parcelleService } from "@/services/api/parcelle";
 import { Parcelle } from "@/types/parcelle";
 import { useAPI } from "./useApi";
+import { useContext } from "react";
+import { ParcelleContext } from "@/context/ParcellesContext";
+
+
+export function useParcelle(){
+  const context = useContext(ParcelleContext);
+  if(context === null){
+    throw new Error("Parcelles context must be used in a Provider");
+  }
+  return context;
+}
+
 
 export function useParcellesAdmin() {
   return useAPI<Parcelle[]>(

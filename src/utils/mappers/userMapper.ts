@@ -1,3 +1,4 @@
+import { ProfileAdministrateur } from './../../types/ui/dashboard';
 import { ProprietaireProfile } from "@/types/ui/proprietaire";
 import { User } from "@/types/user";
 
@@ -13,3 +14,12 @@ export const mapUserToProprietaire = (user: User | null): ProprietaireProfile =>
     status: user?.is_active ?? false
   };
 };
+
+export const mapUserToAdminProfile = (user: User):ProfileAdministrateur => {
+  return {
+    idCadastrale: user.id_cadastrale ?? "ADMIN",
+    nom: user.full_name,
+    email: user.email
+  };
+
+}

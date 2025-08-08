@@ -1,15 +1,18 @@
 import { APIParcelleFeature, APIParcelleResponse, Parcelle } from "@/types/parcelle";
 import { apiClient } from "../client";
+import { mapParcelleDataToStatProprietaires, mapParcellesToParcelleData } from "@/utils/mappers/parcelleMapper";
+import { ParcelleProprietaire } from "@/types/ui/proprietaire";
 
 
 export const parcelleService = {
   
-  async getByProprietaire(): Promise<Parcelle[]> {
+  async getByProprietaire(): Promise<ParcelleProprietaire[]> {
     const response = await apiClient.get<APIParcelleResponse>('/cadastre/parcelle');  
     console.log("Response from parcelleService.getByProprietaire:", response);
     const parcelles =  processParcelles(response);
     console.log("parcelles", parcelles);
-    return parcelles;
+    const parcellesProp = mapParcellesToParcelleData(parcelles);
+    return parcellesProp;
   },
 
   async  getByProprietaireAndParcelleId(id: number): Promise<Parcelle> {
@@ -56,8 +59,6 @@ export const parcelleService = {
  // Validation d'une parcelle
  function isValidParcelle(feature: APIParcelleFeature): boolean{
      console.log("isValidParcelle called with feature:", feature);
-     console.log("Transforming feature to Parcelle:", feature.properties);
-
      const valid = !!(
       feature.id &&
       feature.properties

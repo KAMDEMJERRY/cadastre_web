@@ -6,89 +6,122 @@ import { APILotissementFeature, Lotissement } from "@/types/lotissement";
 import { Parcelle } from "@/types/parcelle";
 import { ParcelleProprietaire, StatsProprietaire } from "@/types/ui/proprietaire";
 
-export const mapParcellesToParcelleData = async (parcelles:Parcelle[]):Promise<ParcelleProprietaire[]>=>{
-    // Creer un cache pou les blocs deja recuperes
+export const mapParcellesToParcelleData = async (Lesparcelles: Parcelle[]): Promise<ParcelleProprietaire[]> => {
+    const parcelles = Lesparcelles.slice();
+    if (!parcelles?.length) return [];
+
+    // Utilisation de WeakMap pour un cache plus efficace
     const blocsCache = new Map<number, Bloc>();
-    const lotissementsCache = new Map<number, Lotissement>();
+    const lotissementsCache = new Map< number, Lotissement>();
 
-    const results =  await Promise.all( 
-        parcelles.map(async (parcelle)=>{
-        let APIbloc: APIBlocFeature;
-        let bloc: Bloc;
-        // Gestion du bloc
-        if(typeof parcelle.parcelle_bloc === 'number'){
-            const blocId = parcelle.parcelle_bloc;
+    // Fonction optimisée pour récupérer les blocs
+    const getBloc = async (blocRef: number | Bloc): Promise<Bloc> => {
+        if (typeof blocRef !== 'number') return blocRef;
+        
+        if (blocsCache.has(blocRef)) {
+            return blocsCache.get(blocRef)!;
+        }
+
+        try {
+            const data  = await apiClient.get<APIBlocFeature>(`/cadastre/bloc/${blocRef}`);
+            const bloc = transformToBloc(data);
+            blocsCache.set(blocRef, bloc);
+            // blocsCache.set(data, bloc); // Cache aussi par l'objet Feature
+            return bloc;
+        } catch (error) {
+            console.error(`Failed to fetch bloc ${blocRef}`, error);
+            return {
+                id: blocRef,
+                name: 'Bloc inconnu',
+                bloc_lotissement: -1,
+                superficie_m2: 0,
+                perimetre_m: 0,
+                geometry: null
+            };
+        }
+    };
+    // Fonction optimisée pour récupérer les lotissements
+    const getLotissement = async (lotissementRef: number | Lotissement): Promise<Lotissement> => {
+        
+        if (typeof lotissementRef !== 'number') return lotissementRef;
+        
+        if (lotissementsCache.has(lotissementRef)) {
             
-            // Verifier le cache d'abord
-            if(blocsCache.has(blocId)){
-                bloc = blocsCache.get(blocId) as Bloc;
-            }else{
-                APIbloc = await apiClient.get(`/cadastre/bloc/${blocId}`);
-                bloc = transformToBloc(APIbloc);
-                console.log("mapParcellesToParcelleDatav", bloc);
-                blocsCache.set(blocId, bloc);
-            }
-        } else {
-            bloc = parcelle.parcelle_bloc as Bloc;
-            blocsCache.set(bloc.id, bloc);
+            const lotissement = lotissementsCache.get(lotissementRef)!;
+            return lotissement;
         }
 
-
-        // Gesstion du lotissement
-        let lotissement : Lotissement
-        let APILotissement: APILotissementFeature;
-        if (typeof bloc.bloc_lotissement === 'number'){
-            const lotissementId = bloc.bloc_lotissement;
-            APILotissement = await apiClient.get(`/cadastre/lotissement/${lotissementId}`);
-            lotissement = transformToLotissement(APILotissement);
-            lotissementsCache.set(lotissementId, lotissement);
-        } else {
-            lotissement = bloc.bloc_lotissement;
-            lotissementsCache.set(lotissement.id, lotissement);
+        try {
+            const data  = await apiClient.get<APILotissementFeature>(`/cadastre/lotissement/${lotissementRef}/`);
+            const lotissement = transformToLotissement(data);
+            lotissementsCache.set(lotissementRef, lotissement);
+            // lotissementsCache.set(data, lotissement); // Cache aussi par l'objet Feature
+            return lotissement;
+        } catch (error) {
+            console.error(`Failed to fetch lotissement ${lotissementRef}`, error);
+            return {
+                id: lotissementRef,
+                name: 'Lotissement inconnu',
+                addresse: 'Non spécifiée',
+                superficie_m2: 0,
+                perimetre_m: 0,
+                longeur: 0,
+                geometry: null
+            };
         }
+    };
+    // On regroupe toutes les requêtes nécessaires avant de mapper
+    const blocsPromises = parcelles.map(p => 
+        typeof p.parcelle_bloc === 'number' ? getBloc(p.parcelle_bloc) : Promise.resolve(p.parcelle_bloc)
+    );
 
-        // 3. Construction de l'objet final
+    const blocs = await Promise.all(blocsPromises);
+    
+    const lotissementsPromises = blocs.map(b => 
+        typeof b.bloc_lotissement === 'number' ? getLotissement(b.bloc_lotissement) : Promise.resolve(b.bloc_lotissement)
+    );
+
+    const lotissements = await Promise.all(lotissementsPromises);
+
+    // Construction du résultat final
+    return parcelles.map((parcelle, index) => {
+        const bloc = blocs[index];
+        const lotissement = lotissements[index];
+
         return {
             id: parcelle.id.toString(),
             numero: parcelle.name || `Parcelle-${parcelle.id}`,
             bloc: {
-            nom: bloc.name || 'Bloc sans nom',
-            lotissement: {
-                nom: lotissement.name,
-                adresse: lotissement.addresse || 'Non spécifiée'
-            }
+                nom: bloc.name || 'Bloc sans nom',
+                lotissement: {
+                    nom:  lotissement.name,
+                    adresse: lotissement.addresse || 'Non spécifiée'
+                }
             },
             superficie: parcelle.superficie_m2 || 0,
             perimetre: parcelle.perimetre_m || 0,
-            planLocalisation:  undefined,
+            planLocalisation: "non disponible", // Valeur par défaut
             geometrie: parcelle.geometry ? {
-            coordinates: parcelle.geometry.coordinates,
-            type: parcelle.geometry.type
+                coordinates: parcelle.geometry.coordinates,
+                type: parcelle.geometry.type
             } : undefined,
             localisation: {
-            pays: 'Cameroun',
-            region: 'Non spécifié',
-            departement: 'Non spécifié',
-            arrondissement: 'Non spécifié',
-            quartier: 'Non spécifié'
+                pays: 'Cameroun',
+                region: 'Non spécifié',
+                departement: 'Non spécifié',
+                arrondissement: 'Non spécifié',
+                quartier: 'Non spécifié'
             }
-       };
-    }));
-
-    return results;
-}
-
-export const mapParcelleDataToStatProprietaires = (parcelles: ParcelleProprietaire[]): StatsProprietaire => {
-  return {
-    totalParcelles : parcelles.length,
-    superficieTotale : parcelles.reduce((sum, p) => sum + p.superficie, 0),
-    nombreLotissements : [new Set(parcelles.map(p=> p.bloc.lotissement.nom))].length,
-    statutGeneral : parcelles.length > 0 ? "à_jour" : "attente"};
+        };
+    });
 };
-
-
-export const mapParcelleDataToLotissement = (parcelles: ParcelleProprietaire[]): string[] => {
-  return [...new Set(parcelles.map(p => p.bloc.lotissement.nom))];
-}
-
-
+// Correction pour nombreLotissements
+export const mapParcelleDataToStatProprietaires = (parcelles: ParcelleProprietaire[]): StatsProprietaire => {
+    const nomsLotissements = new Set(parcelles.map(p => p.bloc.lotissement.nom));
+    return {
+        totalParcelles: parcelles.length,
+        superficieTotale: parcelles.reduce((sum, p) => sum + p.superficie, 0),
+        nombreLotissements: nomsLotissements.size,
+        statutGeneral: parcelles.length > 0 ? "à_jour" : "attente"
+    };
+};

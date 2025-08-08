@@ -1,6 +1,17 @@
 import { Lotissement } from "@/types/lotissement";
 import { useAPI } from "./useApi";
 import { LotissementService } from "@/services/api/lotissement";
+import { useContext } from "react";
+import { LotissementContext } from "@/context/LotissementContext";
+
+
+export const useLotissement = () => {
+    const context = useContext(LotissementContext);
+    if (context === undefined) {
+        throw new Error('useUser must be used within a UserProvider');
+    }
+    return context;
+}
 
 export function useLotissementAdmin() {
     return useAPI<Lotissement[]>(
@@ -8,12 +19,8 @@ export function useLotissementAdmin() {
         {
             immediate: true,
             dependencies: [],
-            transform: (lotissements: Lotissement[]) => {
-                return lotissements.sort((a, b) => a.name.localeCompare(b.name));
-            }
         }
     );
-    
 }
 
 export function useCreateLotissementAdmin() {
@@ -21,7 +28,7 @@ export function useCreateLotissementAdmin() {
         (lotissementData: Omit<Lotissement, 'id'>) => LotissementService.postByAdmin(lotissementData),
         {
             immediate: false,
-            dependencies: []
+            dependencies: [],
         }
     );
     return {
@@ -64,3 +71,6 @@ export function useDeleteLotissementAdmin() {
         error: error
     };
 }
+
+
+
