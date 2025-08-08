@@ -40,27 +40,29 @@ export default function ProprietaireFilters({
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="lotissement" className="text-sm font-medium text-slate-700">
-              Lotissement
-            </Label>
-            <Select 
-              value={filters.lotissement} 
-              onValueChange={(value) => updateFilter('lotissement', value)}
-            >
-              <SelectTrigger className="border-2 border-slate-200 focus:border-blue-500 transition-colors">
-                <SelectValue placeholder="Tous les lotissements" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={lotissements[0]}>Tous les lotissements</SelectItem>
-                {lotissements.map((lotissement) => (
+        <div className="space-y-2">
+          <Label htmlFor="lotissement" className="text-sm font-medium text-slate-700">
+            Lotissement
+          </Label>
+          <Select 
+            value={filters.lotissement || "all"} // "all" est notre valeur spéciale
+            onValueChange={(value) => updateFilter('lotissement', value === "all" ? null : value)}
+          >
+            <SelectTrigger className="border-2 border-slate-200 focus:border-blue-500 transition-colors">
+              <SelectValue placeholder="Tous les lotissements" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tous les lotissements</SelectItem>
+              {lotissements
+                .filter(lotissement => lotissement !== "all") // Évite la duplication
+                .map((lotissement) => (
                   <SelectItem key={lotissement} value={lotissement}>
                     {lotissement}
                   </SelectItem>
                 ))}
-              </SelectContent>
-            </Select>
-          </div>
+            </SelectContent>
+          </Select>
+        </div>        
 
           <div className="space-y-2">
             <Label htmlFor="superficie" className="text-sm font-medium text-slate-700">
