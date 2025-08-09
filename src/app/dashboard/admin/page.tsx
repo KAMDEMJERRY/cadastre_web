@@ -36,19 +36,22 @@ export default function AdminDashboard() {
         <ParcelleProvider>
               <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
                   <DashboardHeader profile={user ? mapUserToAdminProfile(user):mockAdministrateurProfile} onLogout={handleLogout} />
-                  <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-                    <StatsCards stats={mockStats} />
-                    
-                    <DashboardTabs 
-                      lotissements={mockLotissements}
-                      parcelles={mockParcelles}
-                      utilisateurs={mockUtilisateurs}
-                      activities={mockActivities}
-                    />
+                  <main className="pt-32 sm:pt-36 md:pt-40 pb-8">
+                    <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+                      <StatsCards stats={mockStats} />
+                      
+                      <DashboardTabs 
+                        lotissements={mockLotissements}
+                        parcelles={mockParcelles}
+                        utilisateurs={mockUtilisateurs}
+                        activities={mockActivities}
+                      />
 
-                    <PerformanceSummary />
-                  </div>
+                      <PerformanceSummary />
+                    </div>
+                  </main>
                 </div>
+               
         </ParcelleProvider>
       
       </BlocProvider>

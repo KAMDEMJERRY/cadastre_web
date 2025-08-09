@@ -7,9 +7,8 @@ import { LotissementData, ParcelleData, UtilisateurData, ActivityData } from "@/
 import LotissementsTab from "./tabs/LotissementsTab";
 import ParcellesTab from "./tabs/ParcellesTab";
 import UtilisateursTab from "./tabs/UtilisateursTab";
-import ActivityTab from "./tabs/ActivityTab";
 import ToolsTab from "./tabs/ToolsTab";
-import { Lotissement } from "@/types/lotissement";
+import BlocsTab from "./tabs/BlocsTab";
 
 interface DashboardTabsProps {
   lotissements: LotissementData[];
@@ -18,11 +17,9 @@ interface DashboardTabsProps {
   activities: ActivityData[];
 }
 
-export default function DashboardTabs({ 
-  lotissements, 
+export default function DashboardTabs({  
   parcelles, 
   utilisateurs, 
-  activities 
 }: DashboardTabsProps) {
   return (
     <Tabs defaultValue="lotissements" className="space-y-6">
@@ -31,15 +28,18 @@ export default function DashboardTabs({
           <TabsTrigger value="lotissements" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             Lotissements
           </TabsTrigger>
+          <TabsTrigger value="blocs" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
+            Blocs
+          </TabsTrigger>
           <TabsTrigger value="parcelles" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             Parcelles
           </TabsTrigger>
           <TabsTrigger value="utilisateurs" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             Utilisateurs
           </TabsTrigger>
-          <TabsTrigger value="activite" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
+          {/* <TabsTrigger value="activite" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             Activité
-          </TabsTrigger>
+          </TabsTrigger> */}
           <TabsTrigger value="outils" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             Outils
           </TabsTrigger>
@@ -58,6 +58,10 @@ export default function DashboardTabs({
         <LotissementsTab  />
       </TabsContent>
 
+      <TabsContent value="blocs">
+        <BlocsTab  />
+      </TabsContent>
+
       <TabsContent value="parcelles">
         <ParcellesTab parcelles={parcelles} />
       </TabsContent>
@@ -66,9 +70,9 @@ export default function DashboardTabs({
         <UtilisateursTab utilisateurs={utilisateurs} />
       </TabsContent>
 
-      <TabsContent value="activite">
+      {/* <TabsContent value="activite">
         <ActivityTab activities={activities} />
-      </TabsContent>
+      </TabsContent> */}
 
       <TabsContent value="outils">
         <ToolsTab />

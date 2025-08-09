@@ -30,12 +30,59 @@ class ApiClient {
   private async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     try {
       const response = await this.fetchWithRetry(endpoint, options);
-      return response.json() as Promise<T>;
+      // return response.json() as Promise<T>;
+      return this.parseResponse<T>(response, options.method);
     } catch (error) {
       this.handleError(error);
       throw error;
     }
   }
+
+    // NOUVELLE MÉTHODE: Parser la réponse selon le type de requête
+  private async parseResponse<T>(response: Response, method?: string): Promise<T> {
+    const contentType = response.headers.get('content-type');
+    const contentLength = response.headers.get('content-length');
+    
+    // Pour DELETE, ne pas parser si pas de contenu
+    if (method === 'DELETE') {
+      // Si pas de contenu ou contenu vide
+      if (contentLength === '0' || !contentType?.includes('application/json')) {
+        return undefined as T; // Pour DELETE, on retourne undefined
+      }
+      
+      // Si il y a du contenu JSON, essayer de le parser
+      const text = await response.text();
+      if (!text.trim()) {
+        return undefined as T;
+      }
+      
+      try {
+        return JSON.parse(text) as T;
+      } catch (error) {
+        console.warn('Failed to parse DELETE response as JSON:', error);
+        return undefined as T;
+      }
+    }
+    
+    // Pour les autres méthodes (GET, POST, PUT), parser normalement
+    if (contentType?.includes('application/json')) {
+      const text = await response.text();
+      if (!text.trim()) {
+        return {} as T; // Retourner objet vide si pas de contenu
+      }
+      
+      try {
+        return JSON.parse(text) as T;
+      } catch (error) {
+        console.error('Failed to parse JSON response:', error);
+        throw new ApiError(500, 'Invalid JSON response');
+      }
+    }
+    
+    // Si ce n'est pas du JSON, retourner la réponse brute
+    return response.text() as unknown as T;
+  }
+
 
   // Gestion des requêtes avec retry sur 401
   private async fetchWithRetry(endpoint: string, options: RequestOptions): Promise<Response> {
@@ -129,9 +176,56 @@ class ApiClient {
     });
   }
 
-  public delete<T>(endpoint: string, options?: RequestOptions): Promise<T> {
-    return this.request(endpoint, { ...options, method: 'DELETE' });
+  
+
+
+  // Remplacez complètement votre méthode delete par celle-ci :
+  public async delete(endpoint: string, options?: RequestOptions): Promise<void> {
+    const url = `${this.baseURL}${endpoint}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), options?.timeout || this.defaultTimeout);
+
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: this.prepareHeaders(options || {}),
+        signal: controller.signal,
+        ...options,
+      });
+
+      clearTimeout(timeoutId);
+
+      // Gestion du refresh token sur 401
+      if (response.status === 401 && !options?.skipAuth) {
+        await accountAPI.refreshToken();
+        const retryResponse = await fetch(url, {
+          method: 'DELETE',
+          headers: this.prepareHeaders(options || {}, true),
+          signal: controller.signal,
+          ...options,
+        });
+        
+        if (!retryResponse.ok) {
+          throw new ApiError(retryResponse.status, 'Unauthorized after refresh');
+        }
+        
+        // Pour DELETE, on considère que c'est réussi si status 2xx
+        return;
+      }
+
+      if (!response.ok) {
+        throw new ApiError(response.status, `Delete failed: ${response.statusText}`);
+      }
+
+      // Pour DELETE, on ne traite pas la réponse du tout
+      return;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      this.handleError(error);
+      throw error;
+    }
   }
+ 
 }
 
 class ApiError extends Error {
@@ -146,3 +240,6 @@ export const apiClient = new ApiClient({
   baseUrl: API_BASE_URL,
   timeout: 30000,
 });
+
+
+

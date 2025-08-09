@@ -55,6 +55,7 @@ export function LotissementsProvider({children}:{children:ReactNode}){
     };
 
     const handleCreateLotissement = async (lotissementData: Omit<Lotissement, 'id'>) => {
+        console.log("handleCreateLotissement Creating lotissement with data:", lotissementData);
         const lotissement = LotissementService.postByAdmin(lotissementData);
         
         if (!lotissement) {
@@ -69,7 +70,8 @@ export function LotissementsProvider({children}:{children:ReactNode}){
     }
 
     const handleUpdateLotissement = async (id:number, lotissementData: Omit<Lotissement, 'id'>) =>{
-       const lotissement = LotissementService.updateByAdmin(id, lotissementData);
+       alert("HandleUpdate");
+        const lotissement = await LotissementService.updateByAdmin(id, lotissementData);
        
         if (!lotissement) {
             throw new Error("Failed to update lotissement");
@@ -83,8 +85,13 @@ export function LotissementsProvider({children}:{children:ReactNode}){
     }
 
     const handleDeleteLotissement = async (id: number) => {
-        execute(LotissementService.deleteByAdmin(id));
-        await handleFechLotissements();
+        console.log(`Starting deletion of Lotissement with id ${id}`);
+        await LotissementService.deleteByAdmin(id);
+
+        console.log(`Lotissement with id ${id} deleted successfully`);
+        
+        // await handleFechLotissements();
+        refresh()
         console.log(`Lotissement with id ${id} deleted successfully`);        
     }
 

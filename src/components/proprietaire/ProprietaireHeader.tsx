@@ -10,7 +10,7 @@ interface ProprietaireHeaderProps {
 
 export default function ProprietaireHeader({ profile, onLogout }: ProprietaireHeaderProps) {
   return (
-    <header className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 text-slate-50 shadow-lg dark:shadow-slate-800/50">
+    <header className="fixed top-0 right-0 left-0 z-50 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 text-slate-50 shadow-lg dark:shadow-slate-800/50 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">

@@ -4,7 +4,7 @@ import { Bloc } from "@/types/bloc";
 import { BlocContext } from "@/context/BlocContext";
 import { useContext } from "react";
 
-export const useBlocs = ()=>{
+export const useBloc = ()=>{
   const context = useContext(BlocContext);
   if(context == undefined){
     throw new Error('BlocContext must be used within a use Provider');

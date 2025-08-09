@@ -1,5 +1,5 @@
 import { useAPI } from "@/hooks/useApi";
-import { useBlocs } from "@/hooks/useBlocsAdmin";
+import { useBloc } from "@/hooks/useBlocsAdmin";
 import { parcelleService } from "@/services/api/parcelle";
 import { Parcelle } from "@/types/parcelle";
 import { createContext, ReactNode } from "react";
@@ -18,7 +18,7 @@ export const ParcelleContext = createContext<ParcelleContextType | undefined>(un
 
 export function ParcelleProvider({children}:{children:ReactNode}){
     // depend aussi des utilisateurs
-    const {blocs} = useBlocs();
+    const {blocs} = useBloc();
     const {data:parcelles, execute, loading, error, refresh} =  useAPI<Parcelle[]>(parcelleService.getByAdmin, {immediate:true, dependencies:[blocs]});
     
     const handleFechtParcelles = async ()=>{

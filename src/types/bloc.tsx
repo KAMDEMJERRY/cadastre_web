@@ -42,7 +42,7 @@ export interface APIBlocResponse{
   count: number;
   next?: string;
   previous?: string;
-  feature: APIBlocFeature[];
+  features: APIBlocFeature[];
 }
 
 export interface APIBlocFeature{

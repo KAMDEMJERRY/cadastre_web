@@ -1,6 +1,5 @@
 import { APILotissementFeature, APILotissementResponse, Lotissement } from '@/types/lotissement';
 import { apiClient } from '../client';
-import { ApiResponse } from '../utils';
 
 export const LotissementService = {
 
@@ -17,17 +16,24 @@ export const LotissementService = {
   },
 
   async updateByAdmin(id: number, lotissementData: Omit<Lotissement, 'id'>): Promise<Lotissement> {
-    const response = await apiClient.put<Lotissement>(`/cadastre/lotissement/${id}`, lotissementData);
+    const response = await apiClient.put<Lotissement>(`/cadastre/lotissement/${id}/`, lotissementData);
     return response;
   },
 
   async deleteByAdmin(id: number): Promise<void> {
-    await apiClient.delete(`/cadastre/lotissement/${id}`);
+     try {
+          // Maintenant cela fonctionne correctement avec les réponses vides
+          await apiClient.delete(`/cadastre/lotissement/${id}/`);
+          console.log(`Lotissement ${id} supprimé avec succès`);
+      } catch (error) {
+          console.error("Erreur lors de la suppression:", error);
+          throw error;
+      }
   },
 
 
   async getByProprietaire(id: number): Promise<Lotissement> {
-    const response = await apiClient.get<Lotissement>(`/cadastre/lotissement/${id}`);
+    const response = await apiClient.get<Lotissement>(`/cadastre/lotissement/${id}/`);
     return response;
   }
 
@@ -52,6 +58,12 @@ export function isValidLotissement(feature: APILotissementFeature): boolean {
 export function transformToLotissement(feature: APILotissementFeature){
   console.log("Transforming feature to Lotissement: ", feature);
   const properties = feature.properties;
+  const dataString = properties.created_at;
+  let date: Date = new Date();
+  if (typeof dataString == 'string') {
+     date = new Date(dataString);
+  }
+
   return{
     id: feature.id,
     name: properties.name,
@@ -61,5 +73,6 @@ export function transformToLotissement(feature: APILotissementFeature){
     superficie_m2: properties.superficie_m2,
     perimetre_m: properties.perimetre_m,
     geometry: properties.geometry || null,
+    created_at: date.toLocaleDateString('fr-FR')
   };
 }

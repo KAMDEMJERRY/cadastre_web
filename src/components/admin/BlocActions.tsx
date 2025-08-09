@@ -1,20 +1,29 @@
-// components/dashboard/actions/LotissementActions.tsx
+// components/dashboard/actions/BlocActions.tsx
 import React from "react";
+import { Eye, Map, Trash2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Eye, Trash2, Map, AlertTriangle } from "lucide-react";
-import { Lotissement } from "@/types/lotissement";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Bloc } from "@/types/bloc";
 import { useLotissement } from "@/hooks/useLotissementAdmin";
 
 // ============= COMPOSANT DE VUE DÉTAILLÉE =============
-interface ViewLotissementProps {
-  lotissement: Lotissement;
+interface ViewBlocProps {
+  bloc: Bloc;
 }
 
-export function ViewLotissement({ lotissement }: ViewLotissementProps) {
+export function ViewBloc({ bloc }: ViewBlocProps) {
+  const {lotissements} = useLotissement();
   const [isOpen, setIsOpen] = React.useState(false);
-  const {nombreBlocs, nombreParcelles} = useLotissement();
+  const lotissement = lotissements?.find(l => l.id === bloc.bloc_lotissement);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -25,7 +34,7 @@ export function ViewLotissement({ lotissement }: ViewLotissementProps) {
       
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Détails du lotissement</DialogTitle>
+          <DialogTitle>Détails du bloc</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-6">
@@ -33,101 +42,99 @@ export function ViewLotissement({ lotissement }: ViewLotissementProps) {
           <div className="grid grid-cols-1 gap-4">
             <div>
               <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-50">
-                {lotissement.name}
+                {bloc.name}
               </h4>
               <div className="flex items-center gap-2 mt-1">
-              
+                
                 <span className="text-sm text-slate-500">
-                  Créé le {lotissement.created_at}
+                  Créé le {bloc.created_at ? new Date(bloc.created_at).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
             </div>
 
-            {lotissement.addresse && (
-              <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  Adresse
-                </label>
-                <p className="text-slate-900 dark:text-slate-100">
-                  {lotissement.addresse}
-                </p>
-              </div>
-            )}
+            <div>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                Lotissement
+              </label>
+              <p className="text-slate-900 dark:text-slate-100">
+                {lotissement?.name || 'Non défini'}
+              </p>
+            </div>
 
-            {lotissement.description && (
+            {bloc.description && (
               <div>
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Description
                 </label>
                 <p className="text-slate-900 dark:text-slate-100">
-                  {lotissement.description}
+                  {bloc.description}
                 </p>
               </div>
             )}
           </div>
 
           {/* Statistiques */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
-              <p className="text-sm text-slate-600 dark:text-slate-400">Blocs</p>
-              <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-                {nombreBlocs.get(lotissement.id) || 0}
-              </p>
-            </div>
+          {/* <div className="grid grid-cols-2 gap-4">
             <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
               <p className="text-sm text-slate-600 dark:text-slate-400">Parcelles</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-                {nombreParcelles.get(lotissement.id) || 0}
+                {bloc.nombreParcelles || 0}
               </p>
             </div>
-          </div>
+            <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
+              <p className="text-sm text-slate-600 dark:text-slate-400">Parcelles vendues</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                {bloc.parcellesVendues || 0}
+              </p>
+            </div>
+          </div> */}
 
           {/* Mesures */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {lotissement.longeur && (
+            {bloc.longeur && (
               <div>
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Longueur
                 </label>
                 <p className="text-slate-900 dark:text-slate-100">
-                  {lotissement.longeur} m
+                  {bloc.longeur} m
                 </p>
               </div>
             )}
-            {lotissement.superficie_m2 && (
+            {bloc.superficie_m2 && (
               <div>
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Superficie
                 </label>
                 <p className="text-slate-900 dark:text-slate-100">
-                  {lotissement.superficie_m2} m²
+                  {bloc.superficie_m2} m²
                 </p>
               </div>
             )}
-            {lotissement.perimetre_m && (
+            {bloc.perimetre_m && (
               <div>
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Périmètre
                 </label>
                 <p className="text-slate-900 dark:text-slate-100">
-                  {lotissement.perimetre_m} m
+                  {bloc.perimetre_m} m
                 </p>
               </div>
             )}
           </div>
 
           {/* GeoJSON */}
-          {lotissement.geometry && (
+          {bloc.geometry && (
             <div>
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 Données géométriques
               </label>
               <div className="mt-2 bg-slate-50 dark:bg-slate-800 p-3 rounded-md max-h-32 overflow-y-auto">
                 <pre className="text-xs text-slate-600 dark:text-slate-400 whitespace-pre-wrap">
-                  { 
-                     JSON.stringify(lotissement.geometry, null, 2).substring(0, 300)
+                  {
+                     JSON.stringify(bloc.geometry, null, 2).substring(0, 300)
                   }
-                  {(typeof lotissement.geometry === 'string' ? lotissement.geometry : JSON.stringify(lotissement.geometry)).length > 300 && '...'}
+                  {(typeof bloc.geometry === 'string' ? bloc.geometry : JSON.stringify(bloc.geometry)).length > 300 && '...'}
                 </pre>
               </div>
             </div>
@@ -138,84 +145,15 @@ export function ViewLotissement({ lotissement }: ViewLotissementProps) {
   );
 }
 
-// ============= COMPOSANT DE SUPPRESSION =============
-interface DeleteLotissementProps {
-  lotissement: Lotissement;
-  onDelete: (id: number) => Promise<void>;
-}
-
-export function DeleteLotissement({ lotissement, onDelete }: DeleteLotissementProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [isDeleting, setIsDeleting] = React.useState(false);
-
-  const handleDelete = async () => {
-    setIsDeleting(true);
-    try {
-      await onDelete(lotissement.id);
-      setIsOpen(false);
-    } catch (error) {
-      console.error('Erreur lors de la suppression:', error);
-      alert('Erreur lors de la suppression du lotissement');
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" title="Supprimer">
-          <Trash2 className="h-4 w-4 text-red-500" />
-        </Button>
-      </DialogTrigger>
-      
-      <DialogContent className="sm:max-w-[400px]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-red-500" />
-            Confirmer la suppression
-          </DialogTitle>
-        </DialogHeader>
-        
-        <div className="py-4">
-          <p className="text-slate-600 dark:text-slate-400">
-            Êtes-vous sûr de vouloir supprimer le lotissement{' '}
-            <span className="font-semibold text-slate-900 dark:text-slate-50">
-              &quot;{lotissement.name}&quot;
-            </span>{' '}
-            ?
-          </p>
-          <p className="text-sm text-red-600 dark:text-red-400 mt-2">
-            Cette action est irréversible et supprimera également tous les blocs et parcelles associés.
-          </p>
-        </div>
-        
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isDeleting}>
-            Annuler
-          </Button>
-          <Button 
-            variant="destructive" 
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
-            {isDeleting ? 'Suppression...' : 'Supprimer'}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 // ============= COMPOSANT DE CARTOGRAPHIE =============
-interface MapLotissementProps {
-  lotissement: Lotissement;
+interface MapBlocProps {
+  bloc: Bloc;
 }
 
-export function MapLotissement({ lotissement }: MapLotissementProps) {
+export function MapBloc({ bloc }: MapBlocProps) {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const hasGeometry = lotissement.geometry && lotissement.geometry.toString().trim() !== '';
+  const hasGeometry = bloc.geometry && bloc.geometry.toString().trim() !== '';
 
   const renderMap = () => {
     if (!hasGeometry) {
@@ -227,18 +165,18 @@ export function MapLotissement({ lotissement }: MapLotissementProps) {
     }
 
     try {
-      const geoData = typeof lotissement.geometry === 'string' 
-        ? JSON.parse(lotissement.geometry) 
-        : lotissement.geometry;
+      const geoData = typeof bloc.geometry === 'string' 
+        ? JSON.parse(bloc.geometry) 
+        : bloc.geometry;
 
       // Extraction des coordonnées pour centrer la carte
       let coordinates = [];
-      if (geoData.type === 'Feature' && geoData.geometryetry) {
-        coordinates = geoData.geometryetry.coordinates;
+      if (geoData.type === 'Feature' && geoData.geometry) {
+        coordinates = geoData.geometry.coordinates;
       } else if (geoData.type === 'Polygon') {
         coordinates = geoData.coordinates;
       } else if (geoData.type === 'FeatureCollection' && geoData.features?.[0]) {
-        coordinates = geoData.features[0].geometryetry.coordinates;
+        coordinates = geoData.features[0].geometry.coordinates;
       }
 
       // Calculer le centre approximatif
@@ -274,13 +212,21 @@ export function MapLotissement({ lotissement }: MapLotissementProps) {
                 </span>
               </div>
             </div>
+            {bloc.superficie_m2 && (
+              <div className="mt-2 text-sm">
+                <span className="text-slate-600 dark:text-slate-400">Superficie:</span>
+                <span className="ml-2 text-slate-900 dark:text-slate-50">
+                  {bloc.superficie_m2} m²
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Placeholder pour la carte */}
           <div className="h-64 bg-slate-100 dark:bg-slate-800 flex items-center justify-center rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600">
             <div className="text-center">
               <Map className="h-12 w-12 text-slate-400 mx-auto mb-2" />
-              <p className="text-slate-500">Carte interactive</p>
+              <p className="text-slate-500">Carte interactive du bloc</p>
               <p className="text-xs text-slate-400 mt-1">
                 Intégration Leaflet/Mapbox à venir
               </p>
@@ -296,7 +242,7 @@ export function MapLotissement({ lotissement }: MapLotissementProps) {
               Exporter coordonnées
             </Button>
             <Button size="sm" variant="outline">
-              Centrer sur parcelle
+              Voir le lotissement parent
             </Button>
           </div>
 
@@ -313,6 +259,7 @@ export function MapLotissement({ lotissement }: MapLotissementProps) {
           </div>
         </div>
       );
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return (
         <div className="h-64 bg-red-50 dark:bg-red-900/20 flex items-center justify-center rounded-lg">
@@ -334,10 +281,82 @@ export function MapLotissement({ lotissement }: MapLotissementProps) {
       
       <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Cartographie - {lotissement.name}</DialogTitle>
+          <DialogTitle>Cartographie - {bloc.name}</DialogTitle>
+          <DialogDescription>
+            Visualisation géographique du bloc {bloc.name}
+          </DialogDescription>
         </DialogHeader>
         
         {renderMap()}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ============= COMPOSANT DE SUPPRESSION =============
+interface DeleteBlocProps {
+  bloc: Bloc;
+  onDelete: (id: number) => Promise<void>;
+}
+
+export function DeleteBloc({ bloc, onDelete }: DeleteBlocProps) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await onDelete(bloc.id);
+      setIsOpen(false);
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+      alert('Erreur lors de la suppression du bloc');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="sm" title="Supprimer" className="text-red-600 hover:text-red-900">
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      
+      <DialogContent className="sm:max-w-[400px]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-red-500" />
+            Confirmer la suppression
+          </DialogTitle>
+        </DialogHeader>
+        
+        <div className="py-4">
+          <p className="text-slate-600 dark:text-slate-400">
+            Êtes-vous sûr de vouloir supprimer le bloc{' '}
+            <span className="font-semibold text-slate-900 dark:text-slate-50">
+              &quot;{bloc.name}&quot;
+            </span>{' '}
+            ?
+          </p>
+          <p className="text-sm text-red-600 dark:text-red-400 mt-2">
+            Cette action est irréversible et supprimera également toutes les parcelles associées à ce bloc.
+          </p>
+        </div>
+        
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isDeleting}>
+            Annuler
+          </Button>
+          <Button 
+            variant="destructive" 
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? 'Suppression...' : 'Supprimer'}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

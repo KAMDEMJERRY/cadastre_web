@@ -11,7 +11,7 @@ interface AdministrateurHeaderProps{
 
 export default function DashboardHeader({profile, onLogout}: AdministrateurHeaderProps) {
   return (
-    <div className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 text-slate-50 shadow-lg">
+    <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 text-slate-50 shadow-lg backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">

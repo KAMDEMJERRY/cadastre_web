@@ -90,7 +90,9 @@ export default function ProprietaireDashboard() {
         onLogout={handleLogout}
       />
 
-    <div className="max-w-7xl mx-auto px-6 py-8">
+    <main className="pt-32 sm:pt-36 md:pt-40 pb-8">       
+      
+      <div className="max-w-7xl mx-auto px-6 py-8">
         
         {/* En-tête du dashboard */}
          <div className="mb-8">
@@ -132,7 +134,13 @@ export default function ProprietaireDashboard() {
           onGeneratePDF={handleGeneratePDF}
           onViewMap={handleViewMap}
         />
-      </div>
+
+
+
+      
+      </div>   
+
+    </main>
     </div>
   );
 }

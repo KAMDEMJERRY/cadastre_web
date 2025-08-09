@@ -1,75 +1,102 @@
-// components/dashboard/forms/LotissementForm.tsx
+// components/dashboard/forms/BlocForm.tsx
 import React from "react";
+import { Plus, Edit, Upload, FileText, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Upload, FileText, X, Edit } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Bloc } from "@/types/bloc";
+import { useBloc } from "@/hooks/useBlocsAdmin";
 import { useLotissement } from "@/hooks/useLotissementAdmin";
 import { Lotissement } from "@/types/lotissement";
 
-interface LotissementFormData {
+interface BlocFormData {
   name: string;
-  adresse: string;
   description: string;
+  lotissement_id: string;
   longueur: string;
   superficie_m2: string;
   perimetre_m: string;
-  geom: string;
+  geometry: string;
 }
 
-interface LotissementFormProps {
+interface BlocFormProps {
   mode: 'create' | 'edit';
   trigger?: React.ReactNode;
-  lotissement?: Lotissement; // Nécessaire uniquement en mode 'edit'
-  
+  bloc?: Bloc; // Nécessaire uniquement en mode 'edit'
   onSuccess?: () => void;
 }
 
-export default function LotissementForm({mode, trigger, lotissement, onSuccess }: LotissementFormProps) {
-  const {createLotissement, fetchLotissements, updateLotissement } = useLotissement();
-  
-  // alert(typeof updateLotissement === 'function');
+export default function BlocForm({ mode, trigger, bloc, onSuccess }: BlocFormProps) {
+  const { createBloc, updateBloc, fetchBlocs } = useBloc();
+  const { lotissements, fetchLotissements } = useLotissement();
+
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
-  
+
   // Initialiser les données du formulaire selon le mode
-  const getInitialFormData = (): LotissementFormData => {
-    if (mode === 'edit') {
+  const getInitialFormData = (): BlocFormData => {
+    if (mode === 'edit' && bloc) {
       return {
-        name: lotissement?.name || '',
-        adresse: lotissement?.addresse || '',
-        description: lotissement?.description || '',
-        longueur: lotissement?.longeur?.toString() || '',
-        superficie_m2: lotissement?.superficie_m2?.toString() || '',
-        perimetre_m: lotissement?.perimetre_m?.toString() || '',
-        geom: lotissement?.geometry?.toString() || ''
+        name: bloc.name || '',
+        description: bloc.description || '',
+        lotissement_id: bloc.bloc_lotissement?.toString() || '',
+        longueur: bloc.longeur?.toString() || '',
+        superficie_m2: bloc.superficie_m2?.toString() || '',
+        perimetre_m: bloc.perimetre_m?.toString() || '',
+        geometry: bloc.geometry?.toString() || '',
       };
     }
     
     return {
       name: '',
-      adresse: '',
       description: '',
+      lotissement_id: '',
       longueur: '',
       superficie_m2: '',
       perimetre_m: '',
-      geom: ''
+      geometry: '',
     };
   };
 
-  const [formData, setFormData] = React.useState<LotissementFormData>(getInitialFormData());
+  const [formData, setFormData] = React.useState<BlocFormData>(getInitialFormData());
 
-  // Réinitialiser le formulaire quand le lotissement change
+  // Réinitialiser le formulaire quand le bloc change
   React.useEffect(() => {
     setFormData(getInitialFormData());
-  }, [, mode]);
+  }, [bloc, mode]);
 
-  const handleInputChange = (field: keyof LotissementFormData, value: string) => {
+  // Charger les lotissements au montage du composant
+  React.useEffect(() => {
+    fetchLotissements();
+  }, []);
+
+  const handleInputChange = (field: keyof BlocFormData, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value
     }));
+  };
+
+  const resetForm = () => {
+    setFormData(getInitialFormData());
+    setSelectedFile(null);
   };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,20 +140,16 @@ export default function LotissementForm({mode, trigger, lotissement, onSuccess }
     setSelectedFile(null);
     setFormData(prev => ({
       ...prev,
-      geom: mode === 'edit' && lotissement ? (lotissement.geometry?.toString() || '') : ''
+      geom: mode === 'edit' && bloc ? (bloc.geometry || '') : ''
     }));
-  };
-
-  const resetForm = () => {
-    setFormData(getInitialFormData());
-    setSelectedFile(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validations
     if (!formData.name.trim()) {
-      alert("Le nom du lotissement est requis.");
+      alert("Le nom du bloc est requis.");
       return;
     }
 
@@ -135,47 +158,42 @@ export default function LotissementForm({mode, trigger, lotissement, onSuccess }
       return;
     }
 
-    // Validation du GeoJSON si présent
-    if (formData.geom) {
-      try {
-        JSON.parse(formData.geom);
-      } catch (error) {
-        alert("Le format GeoJSON n'est pas valide");
-        return;
-      }
+    if (!formData.lotissement_id) {
+      alert("Veuillez sélectionner un lotissement.");
+      return;
     }
 
     // Préparer les données pour l'API
     const submitData = {
       name: formData.name,
-      addresse: formData.adresse || undefined,
       description: formData.description || undefined,
+      bloc_lotissement: parseInt(formData.lotissement_id),
       longueur: formData.longueur ? parseFloat(formData.longueur) : null,
       superficie_m2: parseFloat(formData.superficie_m2),
       perimetre_m: parseFloat(formData.perimetre_m),
-      geom: formData.geom || null
+      geom: formData.geometry || null,
     };
-    // Logique de soumission selon le mode
-    if (mode === 'create') {
-      await createLotissement(submitData);
-      console.log("Creating lotissement with data:", submitData);
-    } else if (mode === 'edit' && lotissement) {
-      try{
-        await  updateLotissement(lotissement.id, submitData);
-        console.log("Updating lotissement with data:", submitData);
-      } catch(error){
-        console.error("Error updating lotissement:", error);
-        alert("Erreur lors de la mise à jour du lotissement. Veuillez réessayer.");
-        return;
-      }
-      
-    }
 
-    // Actualiser la liste et fermer le modal
-    fetchLotissements();
-    resetForm();
-    setIsModalOpen(false);
-    onSuccess?.();
+    try {
+      // Logique de soumission selon le mode
+      if (mode === 'create') {
+        console.log("Creating bloc with data:", submitData);
+        await createBloc(submitData);
+        console.log("Bloc created with data:", submitData);
+      } else if (mode === 'edit' && bloc) {
+        await updateBloc(bloc.id, submitData);
+        console.log("Updating bloc with data:", submitData);
+      }
+
+      // Actualiser la liste et fermer le modal
+      fetchBlocs();
+      resetForm();
+      setIsModalOpen(false);
+      onSuccess?.();
+    } catch (error) {
+      console.error(`Error ${mode === 'create' ? 'creating' : 'updating'} bloc:`, error);
+      alert(`Erreur lors de la ${mode === 'create' ? 'création' : 'mise à jour'} du bloc. Veuillez réessayer.`);
+    }
   };
 
   const handleCancel = () => {
@@ -186,11 +204,11 @@ export default function LotissementForm({mode, trigger, lotissement, onSuccess }
   // Bouton de déclenchement par défaut
   const defaultTrigger = mode === 'create' ? (
     <Button className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:hover:bg-slate-200 dark:text-slate-900">
-      <Plus className="h-4 w-4 mr-2" />
-      Nouveau Lotissement
+      <Plus className="mr-2 h-4 w-4" />
+      Nouveau Bloc
     </Button>
   ) : (
-    <Button variant="ghost" size="sm">
+    <Button variant="ghost" size="sm" className="text-slate-600 hover:text-slate-900">
       <Edit className="h-4 w-4" />
     </Button>
   );
@@ -200,69 +218,93 @@ export default function LotissementForm({mode, trigger, lotissement, onSuccess }
       <DialogTrigger asChild>
         {trigger || defaultTrigger}
       </DialogTrigger>
-
+      
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {mode === 'create' ? 'Créer un nouveau lotissement' : `Modifier "${lotissement?.name}"`}
+            {mode === 'create' ? 'Créer un nouveau bloc' : `Modifier "${bloc?.name}"`}
           </DialogTitle>
+          <DialogDescription>
+            {mode === 'create'
+              ? 'Ajoutez un nouveau bloc à votre système.'
+              : 'Modifiez les informations du bloc.'}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 gap-4">
-            {/* Nom */}
-            <div>
+          <div className="grid gap-4 py-4">
+            {/* Nom du bloc */}
+            <div className="grid gap-2">
               <Label htmlFor="name" className="text-sm font-medium">
-                Nom du lotissement *
+                Nom du bloc *
               </Label>
               <Input
                 id="name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
+                placeholder="Entrez le nom du bloc"
                 maxLength={100}
                 className="mt-1"
-                placeholder="Entrez le nom du lotissement"
                 required
               />
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-slate-500">
                 {formData.name.length}/100 caractères
               </p>
             </div>
 
-            {/* Adresse */}
-            <div>
-              <Label htmlFor="adresse" className="text-sm font-medium">
-                Adresse
-              </Label>
-              <Input
-                id="adresse"
-                type="text"
-                value={formData.adresse}
-                onChange={(e) => handleInputChange("adresse", e.target.value)}
-                className="mt-1"
-                placeholder="Entrez l'adresse"
-              />
-            </div>
-
             {/* Description */}
-            <div>
+            <div className="grid gap-2">
               <Label htmlFor="description" className="text-sm font-medium">
                 Description
               </Label>
-              <Input
+              <Textarea
                 id="description"
-                type="text"
                 value={formData.description}
                 onChange={(e) => handleInputChange("description", e.target.value)}
+                placeholder="Description du bloc (optionnel)"
                 className="mt-1"
-                placeholder="Entrez une description du lotissement"
+                rows={3}
               />
+            </div>
+
+            {/* Lotissement */}
+            <div className="grid gap-2">
+              <Label htmlFor="lotissement" className="text-sm font-medium">
+                Lotissement *
+              </Label>
+              <Select
+                value={formData.lotissement_id}
+                onValueChange={(value) => handleInputChange("lotissement_id", value)}
+                required
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Sélectionnez un lotissement" />
+                </SelectTrigger>
+                <SelectContent>
+                  {lotissements && lotissements.length > 0 ? (
+                    lotissements.map((lotissement:Lotissement) => (
+                      <SelectItem key={lotissement.id} value={lotissement.id.toString()}>
+                        {lotissement.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="" disabled>
+                      Aucun lotissement disponible
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+              {(!lotissements || lotissements.length === 0) && (
+                <p className="text-xs text-orange-500">
+                  Aucun lotissement disponible. Créez d&apos;abord un lotissement.
+                </p>
+              )}
             </div>
 
             {/* Mesures */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* <div>
+              <div>
                 <Label htmlFor="longueur" className="text-sm font-medium">
                   Longueur
                 </Label>
@@ -275,7 +317,7 @@ export default function LotissementForm({mode, trigger, lotissement, onSuccess }
                   className="mt-1"
                   placeholder="0.00"
                 />
-              </div> */}
+              </div>
 
               <div>
                 <Label htmlFor="superficie_m2" className="text-sm font-medium">
@@ -355,12 +397,12 @@ export default function LotissementForm({mode, trigger, lotissement, onSuccess }
                 </div>
 
                 {/* Aperçu du contenu GeoJSON */}
-                {formData.geom && (
+                {formData.geometry && (
                   <div className="mt-2">
                     <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-md max-h-32 overflow-y-auto">
                       <pre className="text-xs text-slate-600 dark:text-slate-400 whitespace-pre-wrap">
-                        {formData.geom.substring(0, 200)}
-                        {formData.geom.length > 200 && '...'}
+                        {formData.geometry.substring(0, 200)}
+                        {formData.geometry.length > 200 && '...'}
                       </pre>
                     </div>
                   </div>
@@ -374,7 +416,7 @@ export default function LotissementForm({mode, trigger, lotissement, onSuccess }
           </div>
 
           {/* Boutons d'action */}
-          <div className="flex justify-end space-x-2 pt-4">
+          <DialogFooter className="flex justify-end space-x-2 pt-4">
             <Button
               type="button"
               variant="outline"
@@ -385,10 +427,11 @@ export default function LotissementForm({mode, trigger, lotissement, onSuccess }
             <Button
               type="submit"
               className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:hover:bg-slate-200 dark:text-slate-900"
+              disabled={!lotissements || lotissements.length === 0}
             >
-              {mode === 'create' ? 'Créer le lotissement' : 'Mettre à jour'}
+              {mode === 'create' ? 'Créer le bloc' : 'Mettre à jour'}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
