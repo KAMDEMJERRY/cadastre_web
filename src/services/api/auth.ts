@@ -12,6 +12,7 @@ export const accountAPI = {
         localStorage.setItem('refresh_token', response.refresh);
       }
     }
+    console.log(response)
     return response;
   },
 
