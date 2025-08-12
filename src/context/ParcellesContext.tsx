@@ -4,7 +4,7 @@ import { parcelleService } from "@/services/api/parcelle";
 import { Parcelle } from "@/types/parcelle";
 import { createContext, ReactNode } from "react";
 
-type ParcelleContextType = {
+export type ParcelleContextType = {
     parcelles : Parcelle[] | null;
     loading: boolean;
     error: string | null;

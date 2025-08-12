@@ -23,12 +23,15 @@ export const parcelleService = {
 
   // Methodes pour l'admin
   async getByAdmin(): Promise<Parcelle[]>{
-      const response = await apiClient.get<Parcelle[]>(`/cadastre/parcelle`);
-      return response;
+      const response = await apiClient.get<APIParcelleResponse>(`/cadastre/parcelle`);
+      console.log("Response from parcelleService.getByProprietaire:", response);
+      const parcelles =  processParcelles(response);
+      console.log("parcelles", parcelles);
+      return parcelles;
   },
   
   async postByAdmin(parcelleData: Omit<Parcelle, 'id'>): Promise<Parcelle>{
-      const  response = await apiClient.post<Parcelle>(`/cadastre/parcelle`, parcelleData);
+      const  response = await apiClient.post<Parcelle>(`/cadastre/parcelle/`, parcelleData);
       return response;
   },
   

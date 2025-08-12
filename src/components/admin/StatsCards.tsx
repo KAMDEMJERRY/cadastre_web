@@ -1,74 +1,64 @@
 // components/dashboard/StatsCards.tsx
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Building2, Users, MapPin, Layers } from "lucide-react";
-import { StatsData } from "@/types/ui/dashboard";
+import { Building2, Layers, MapPin, Users } from "lucide-react";
+import { useLotissement } from "@/hooks/useLotissementAdmin";
+import { useBloc } from "@/hooks/useBlocsAdmin";
+import { useParcelle } from "@/hooks/useParcellesAdmin";
+import { useUsers } from "@/hooks/useUser";
 
-interface StatsCardsProps {
-  stats: StatsData;
-}
+export default function StatsCards() {
+  // Récupération des données
+  const { lotissements, loading: loadingLotissements } = useLotissement();
+  const { blocs, loading: loadingBlocs } = useBloc();
+  const { parcelles, loading: loadingParcelles } = useParcelle();
+  const { users, loading: loadingUsers } = useUsers();
 
-export default function StatsCards({ stats }: StatsCardsProps) {
+  // Filtre des propriétaires seulement
+  const proprietaires = users?.filter(user => user.role === 'proprietaire') || [];
+
+  // Configuration des cartes de stats
   const statsConfig = [
     {
       title: "Lotissements",
-      value: stats.totalLotissements,
+      value: loadingLotissements ? '-' : lotissements?.length,
       icon: Building2,
-      badge: "+3 ce mois",
-      badgeClass: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+      color: "text-green-500"
     },
     {
       title: "Blocs",
-      value: stats.totalBlocs,
+      value: loadingBlocs ? '-' : blocs?.length,
       icon: Layers,
-      badge: "+12 ce mois",
-      badgeClass: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+      color: "text-blue-500"
     },
     {
-      title: "Parcelles Totales",
-      value: stats.totalParcelles,
+      title: "Parcelles",
+      value: loadingParcelles ? '-' : parcelles?.length,
       icon: MapPin,
-      subtitle: `${stats.parcellesVendues} vendues • ${stats.parcellesLibres} libres`
+      color: "text-orange-500"
     },
     {
-      title: "Utilisateurs/Propriétaires",
-      value: stats.totalUtilisateurs,
+      title: "Propriétaires",
+      value: loadingUsers ? '-' : proprietaires.length,
       icon: Users,
-      badge: `+${stats.croissanceMensuelle}%`,
-      badgeClass: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+      color: "text-purple-500"
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {statsConfig.map((stat, index) => {
-        const IconComponent = stat.icon;
-        return (
-          <Card key={index} className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all duration-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                {stat.title}
-              </CardTitle>
-              <IconComponent className="h-4 w-4 text-slate-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-slate-900 dark:text-slate-50">{stat.value}</div>
-              {stat.badge && (
-                <div className="flex items-center space-x-2 mt-2">
-                  <Badge className={stat.badgeClass}>
-                    {stat.badge}
-                  </Badge>
-                </div>
-              )}
-              {stat.subtitle && (
-                <div className="text-xs text-slate-500 mt-1">
-                  {stat.subtitle}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        );
-      })}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {statsConfig.map((stat, index) => (
+        <Card key={index} className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between p-4 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {stat.title}
+            </CardTitle>
+            <stat.icon className={`h-4 w-4 ${stat.color}`} />
+          </CardHeader>
+          <CardContent className="p-4 pt-0">
+            <div className="text-2xl font-bold">{stat.value}</div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }

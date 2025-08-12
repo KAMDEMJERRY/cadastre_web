@@ -7,7 +7,7 @@ import { ParcelleContext } from "@/context/ParcellesContext";
 
 export function useParcelle(){
   const context = useContext(ParcelleContext);
-  if(context === null){
+  if(context === undefined){
     throw new Error("Parcelles context must be used in a Provider");
   }
   return context;

@@ -61,3 +61,15 @@ export interface UserListResponse {
   previous: string | null;
   results: User[];
 }
+export interface APIUsersResponse{
+  count: number;
+  next?: string;
+  previous?: string;
+  results: User[];
+}
+
+export interface APIUserFeature{
+  id: number;
+  properties: Omit<User, 'id'>;
+  type: string;
+}
