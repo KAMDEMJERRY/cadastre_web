@@ -11,7 +11,6 @@ export const UserService = {
         console.log("Response from User fetch API:", response);
         const users = processUsers(response);
         console.log("Processed Users:", users);
-        alert();
         return users;
     },
 
@@ -43,7 +42,7 @@ export const UserService = {
     
 
     async assignRole(id: number, roleData: {role: string}): Promise<void>{
-        const response = await apiClient.post<User>(`accounts/users/${id}/assign_role/`, roleData)
+        const response = await apiClient.post<User>(`/accounts/users/${id}/assign_role/`, roleData)
     },
     
     async deactivate(id: number): Promise<void>{

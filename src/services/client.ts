@@ -83,7 +83,6 @@ class ApiClient {
     return response.text() as unknown as T;
   }
 
-
   // Gestion des requêtes avec retry sur 401
   private async fetchWithRetry(endpoint: string, options: RequestOptions): Promise<Response> {
     const url = `${this.baseURL}${endpoint}`;
@@ -175,9 +174,6 @@ class ApiClient {
       body: JSON.stringify(body) 
     });
   }
-
-  
-
 
   // Remplacez complètement votre méthode delete par celle-ci :
   public async delete(endpoint: string, options?: RequestOptions): Promise<void> {

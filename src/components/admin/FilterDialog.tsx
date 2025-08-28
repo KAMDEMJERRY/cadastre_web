@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Filter, X } from "lucide-react";
-import { FilterOptions } from "@/hooks/useSearchFilter";
+import { FilterOptions } from "@/app/dashboard/admin/types/filters";
 
 interface FilterDialogProps {
   activeTab: string;

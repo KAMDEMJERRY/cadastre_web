@@ -182,12 +182,12 @@ export function ViewParcelle({ parcelle }: ParcelleActionProps) {
               </div>
             </div>
             
-            {parcelle.longeur && (
+            {/* {parcelle.longeur && (
               <div className="mt-2">
                 <span className="text-sm font-medium text-slate-700">Longueur:</span>
                 <p className="text-slate-900">{parcelle.longeur} m</p>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Géométrie */}

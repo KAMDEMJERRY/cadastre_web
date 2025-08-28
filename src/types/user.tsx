@@ -4,6 +4,12 @@ export type Genre = 'M' | 'F';
 export type AccountType = 'IND' | 'ORG';
 export type UserRole = 'admin' | 'agent' | 'proprietaire';
 
+export enum Role {
+  ADMIN = 'super_administrateurs',
+  AGENT = 'administrateurs_cadastraux',
+  PROPRIETAIRE = 'proprietaires'
+}
+
 export interface BaseUser {
   id: number;
   email: string;
@@ -29,7 +35,7 @@ export interface User extends BaseUser {
   role: UserRole;
 }
 
-export interface UserCreatePayload {
+export interface UserCreatePayload{
   username?: string;
   email: string;
   genre: Genre;

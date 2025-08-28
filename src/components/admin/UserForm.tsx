@@ -31,13 +31,14 @@ import { Switch } from "@/components/ui/switch";
 import { UserPlus, Edit } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useUsers } from "@/hooks/useUser";
-import { AccountType, User, UserCreatePayload, UserRole } from "@/types/user";
+import { User, UserCreatePayload  } from "@/types/user";
 import { buildUserData } from "@/utils/mappers/userMapper";
+import { AssignRole } from "./UserActions";
 
 interface UserFormProps {
   mode: 'create' | 'edit';
   user?: User;
-  userType: 'admin' | 'proprietaire';
+  userType: 'admin' | 'proprietaire' | 'agent';
 }
 
 interface UserFormData {
@@ -55,15 +56,16 @@ interface UserFormData {
   id_cadastrale?: string;
   domaine?: string;
   nom_organization?: string;
+  password: string;
 }
 
 export default function UserForm({ mode, user, userType }: UserFormProps) {
   const [open, setOpen] = useState(false);
-  const { createUser, updateUser } = useUsers();
+  const { createUser, updateUser, assignRole, toggleUserStatus } = useUsers();
   
   const form = useForm<UserFormData>({
     defaultValues: {
-      full_name: user?.full_name,
+      full_name: user?.username || '',
       email: user?.email || '',
       username: user?.username || '',
       num_cni: user?.num_cni || '',
@@ -71,31 +73,37 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
       addresse: user?.addresse || '',
       genre: user?.genre || 'M',
       account_type: user?.account_type || 'particulier',
-      role: user?.role || (userType === 'admin' ? 'admin' : 'proprietaire'),
-      is_active: user?.is_active ?? true,
+      role: (userType === 'admin' ? 'admin' : (userType === 'agent')?'agent':'proprietaire'),
       date_naissance: user?.date_naissance || '',
       id_cadastrale: user?.id_cadastrale || '',
       domaine: user?.domaine || '',
       nom_organization: user?.nom_organization || '',
+      password: "",
     },
   });
 
   const handleSubmit = async (data: UserFormData) => {
-    // export type AccountType = 'IND' | 'ORG';
 
     const userData = buildUserData(data);
   
     try {
       if (mode === 'create') {
-        await createUser(userData as UserCreatePayload);
+        const newUser = await createUser(userData as UserCreatePayload);
+        console.log("newUser", newUser);
+        alert("newUser");
+        // Assigner le role userType
+        
+        assignRole(newUser.id, userType)
       } else if (user?.id) {
         await updateUser(user.id, userData);
+
       }
       setOpen(false);
       form.reset();
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
     }
+
   };
 
   const getDialogTitle = () => {
@@ -126,6 +134,7 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+     
       <DialogTrigger asChild>
         {mode === 'create' ? (
           <Button className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:hover:bg-slate-200 dark:text-slate-900">
@@ -138,7 +147,9 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
           </Button>
         )}
       </DialogTrigger>
+
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+       
         <DialogHeader>
           <DialogTitle>{getDialogTitle()}</DialogTitle>
           <DialogDescription>
@@ -191,12 +202,12 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="username"
+                name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nom d&apos;utilisateur</FormLabel>
+                    <FormLabel>Mot de passe</FormLabel>
                     <FormControl>
-                      <Input placeholder="username" {...field} />
+                      <Input placeholder="password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -239,7 +250,7 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
                 name="date_naissance"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date de naissance</FormLabel>
+                    <FormLabel>Date de naissance/creation</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -301,9 +312,8 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="particulier">Particulier</SelectItem>
-                        <SelectItem value="entreprise">Entreprise</SelectItem>
-                        <SelectItem value="organisation">Organisation</SelectItem>
+                        <SelectItem value="IND">Particulier</SelectItem>
+                        <SelectItem value="ORG">Organisation</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -311,7 +321,7 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
                 )}
               />
               
-              <FormField
+             { userType === "admin" && <FormField
                 control={form.control}
                 name="role"
                 render={({ field }) => (
@@ -334,11 +344,11 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              />}
             </div>
 
             {/* Champs spécifiques aux entreprises */}
-            {form.watch('account_type') === 'entreprise' && (
+            {form.watch('account_type') === 'ORG' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -419,6 +429,7 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
             </DialogFooter>
           </form>
         </Form>
+      
       </DialogContent>
     </Dialog>
   );
