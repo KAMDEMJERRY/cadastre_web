@@ -81,11 +81,12 @@ export default function UtilisateursTab({ userType }: UtilisateursTabProps) {
                     Contact
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Rôle
+                    ID_CADASTRALE
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    Statut
+                    Rôle
                   </th>
+                 
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                     Type de compte
                   </th>
@@ -118,6 +119,9 @@ export default function UtilisateursTab({ userType }: UtilisateursTabProps) {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
+                      {user.id_cadastrale}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <Badge className={getRoleBadgeColor(user.role)}>
                         {user.role === "admin"
                           ? "Administrateur"
@@ -126,9 +130,7 @@ export default function UtilisateursTab({ userType }: UtilisateursTabProps) {
                           : "Propriétaire"}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(user.is_active)}
-                    </td>
+                  
                     <td className="px-6 py-4 whitespace-nowrap text-slate-600 dark:text-slate-400">
                       {user.account_type === "IND"
                         ? "Particulier"

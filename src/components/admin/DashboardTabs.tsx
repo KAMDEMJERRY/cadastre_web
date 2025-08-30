@@ -154,7 +154,7 @@ function TableHeader({
         </TabsTrigger>
       </TabsList>
 
-        <div className="flex items-center space-x-2 ml-4">
+        {/* <div className="flex items-center space-x-2 ml-4">
         <Input
           placeholder="Rechercher..."
           className="w-64"
@@ -173,7 +173,7 @@ function TableHeader({
     totalCount={totalCount ?? 0}
   />
 )}
-    </div>
+    </div> */}
     </div>
   );
 }
