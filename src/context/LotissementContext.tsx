@@ -103,7 +103,6 @@ export function LotissementsProvider({ children }: { children: ReactNode }) {
     id: number,
     lotissementData: Omit<Lotissement, "id">
   ) => {
-    alert("HandleUpdate");
     const lotissement = await LotissementService.updateByAdmin(
       id,
       lotissementData

@@ -16,7 +16,6 @@ export const UserService = {
 
     async postUser(userData: Omit<UserCreatePayload, 'id'>): Promise<User>{
        console.log(userData);
-        alert(userData);
        
         const response = await apiClient.post<User>(`/accounts/users/`, userData);
         return response;

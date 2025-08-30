@@ -90,7 +90,6 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
       if (mode === 'create') {
         const newUser = await createUser(userData as UserCreatePayload);
         console.log("newUser", newUser);
-        alert("newUser");
         // Assigner le role userType
         
         assignRole(newUser.id, userType)

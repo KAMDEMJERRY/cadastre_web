@@ -57,7 +57,6 @@ export default function LotissementsTab() {
                           <div className="flex items-center space-x-2">
                             <ViewLotissement lotissement={lotissement} />
                             <LotissementForm mode="edit" lotissement={lotissement} />
-                            <MapLotissement lotissement={lotissement} />
                             <DeleteLotissement lotissement={lotissement} onDelete={deleteLotissement} />
                           </div>
                         </td>
