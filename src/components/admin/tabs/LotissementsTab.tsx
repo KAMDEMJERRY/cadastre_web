@@ -6,6 +6,9 @@ import { useLotissement } from "@/hooks/useLotissementAdmin";
 
 export default function LotissementsTab() {
   const {lotissements, deleteLotissement, nombreBlocs, nombreParcelles} = useLotissement();
+  console.log("TabLotissement");  
+  console.log(nombreBlocs, nombreParcelles);
+  console.log("TabLotissement");  
 
   return (
     <div className="space-y-6">
