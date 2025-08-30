@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bell, Download, Home, LogOut } from "lucide-react";
 import { ProfileAdministrateur } from "@/types/ui/dashboard";
+import { User } from "@/types/user";
 
 interface AdministrateurHeaderProps{
-  profile: ProfileAdministrateur;
+  profile: User | null;
   onLogout: ()=> void;
 }
 
@@ -25,9 +26,9 @@ export default function DashboardHeader({profile, onLogout}: AdministrateurHeade
           </div>
           <div className="flex items-center space-x-4">
             <div >
-                   <h3 className="text-lg font-semibold text-slate-50">{profile?.nom ?? "Admin 1"}</h3>
+                   <h3 className="text-lg font-semibold text-slate-50">{profile?.username ?? "Admin 1"}</h3>
                    <p className="text-sm text-slate-300">
-                      ID: {profile?.idCadastrale}
+                      ID: {profile?.id_cadastrale}
                    </p>
             </div>
             <Avatar>

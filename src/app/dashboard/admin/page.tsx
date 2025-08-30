@@ -32,7 +32,7 @@ export default function AdminDashboard() {
                 
                     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
                        
-                        <DashboardHeader profile={user} />
+                        <DashboardHeader profile={user}  onLogout={handleLogout}/>
                        
                        
                         <main className="pt-32 sm:pt-36 md:pt-40 pb-8">
