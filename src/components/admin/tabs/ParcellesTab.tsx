@@ -24,6 +24,7 @@ import { useBloc } from "@/hooks/useBlocsAdmin";
 import { Parcelle } from "@/types/parcelle";
 import { Bloc } from "@/types/bloc";
 import { User } from "@/types/user";
+import { useLotissement } from "@/hooks/useLotissementAdmin";
 
 interface ParcellesTableProps {
   showStats?: boolean;
@@ -37,6 +38,7 @@ export default function ParcellesTable({
   const { parcelles, deleteParcelle, loading, error } = useParcelle();
   const { users } = useUsers();
   const { blocs } = useBloc();
+  const {lotissements} = useLotissement();
   
   // Filtrer et rechercher les parcelles
   const filteredParcelles = useMemo(() => {
@@ -88,7 +90,8 @@ export default function ParcellesTable({
     if (bloc && typeof bloc.bloc_lotissement === 'object') {
       return bloc.bloc_lotissement.name;
     }
-    return 'N/A';
+    const lotissement = lotissements?.find(lot=>lot.id == bloc?.id);
+    return lotissement?.name || 'N/A';
   };
 
   const getProprietaireName = (proprietaire: number | User): string => {
