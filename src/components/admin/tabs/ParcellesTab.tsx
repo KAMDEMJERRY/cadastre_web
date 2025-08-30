@@ -4,15 +4,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { 
-  Search, 
-  Filter, 
-  Download, 
+import {
+  Search,
+  Filter,
+  Download,
   MapPin,
   Calendar,
   Square,
   Ruler,
-  User as UserIcon
+  User as UserIcon,
 } from "lucide-react";
 import { ViewParcelle, EditParcelle, DeleteParcelle } from "../ParcelleActions";
 import ParcelleForm from "../ParcelleForm";
@@ -34,12 +34,12 @@ export default function ParcellesTable({
   showStats = true,
 }: ParcellesTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   const { parcelles, deleteParcelle, loading, error } = useParcelle();
   const { users } = useUsers();
   const { blocs } = useBloc();
-  const {lotissements} = useLotissement();
-  
+  const { lotissements } = useLotissement();
+
   // Filtrer et rechercher les parcelles
   const filteredParcelles = useMemo(() => {
     if (!parcelles) return [];
@@ -56,64 +56,72 @@ export default function ParcellesTable({
   const stats = useMemo(() => {
     if (!filteredParcelles.length) return null;
 
-    const totalSuperficie = filteredParcelles.reduce((sum, p) => sum + p.superficie_m2, 0);
+    const totalSuperficie = filteredParcelles.reduce(
+      (sum, p) => sum + p.superficie_m2,
+      0
+    );
     const avgSuperficie = totalSuperficie / filteredParcelles.length;
 
     return {
       total: filteredParcelles.length,
       totalSuperficie,
       avgSuperficie,
-      withGeometry: filteredParcelles.filter(p => p.geometry).length,
+      withGeometry: filteredParcelles.filter((p) => p.geometry).length,
     };
   }, [filteredParcelles]);
 
   // Helpers pour récupérer les informations
   const getBlocName = (parcelle_bloc: number | Bloc): string => {
-    if (typeof parcelle_bloc === 'object') return parcelle_bloc.name;
-    const bloc = blocs?.find(b => b.id === parcelle_bloc);
+    if (typeof parcelle_bloc === "object") return parcelle_bloc.name;
+    const bloc = blocs?.find((b) => b.id === parcelle_bloc);
     return bloc?.name || `Bloc ${parcelle_bloc}`;
   };
 
   const getLotissementName = (parcelle_bloc: number | Bloc): string => {
-    if (typeof parcelle_bloc === 'object') {
-      if (typeof parcelle_bloc.bloc_lotissement === 'object') {
+    if (typeof parcelle_bloc === "object") {
+      if (typeof parcelle_bloc.bloc_lotissement === "object") {
         return parcelle_bloc.bloc_lotissement.name;
       }
-      const bloc = blocs?.find(b => b.id === parcelle_bloc.id);
-      if (bloc && typeof bloc.bloc_lotissement === 'object') {
+      const bloc = blocs?.find((b) => b.id === parcelle_bloc.id);
+      if (bloc && typeof bloc.bloc_lotissement === "object") {
         return bloc.bloc_lotissement.name;
       }
-      return 'N/A';
+      return "N/A";
     }
-    
-    const bloc = blocs?.find(b => b.id === parcelle_bloc);
-    if (bloc && typeof bloc.bloc_lotissement === 'object') {
+
+    const bloc = blocs?.find((b) => b.id === parcelle_bloc);
+    if (bloc && typeof bloc.bloc_lotissement === "object") {
       return bloc.bloc_lotissement.name;
     }
-    const lotissement = lotissements?.find(lot=>lot.id == bloc?.id);
-    return lotissement?.name || 'N/A';
+    const lotissement = lotissements?.find((lot) => lot.id == bloc?.id);
+    return lotissement?.name || "N/A";
   };
 
   const getProprietaireName = (proprietaire: number | User): string => {
-    if (typeof proprietaire === 'object') return proprietaire.full_name;
-    const user = users?.find(u => u.id === proprietaire);
-    return user?.full_name || 'Non assigné';
+    if (typeof proprietaire === "object") return proprietaire.full_name;
+    const user = users?.find((u) => u.id === proprietaire);
+    return user?.full_name || "Non assigné";
+  };
+    const getProprietaireIDCAD = (proprietaire: number | User): string => {
+    if (typeof proprietaire === "object") return proprietaire.full_name;
+    const user = users?.find((u) => u.id === proprietaire);
+    return user?.id_cadastrale || "Non assigné";
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('fr-FR');
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString("fr-FR");
   };
 
   const formatSuperficie = (superficie: number) => {
-    return superficie.toLocaleString('fr-FR') + ' m²';
+    return superficie.toLocaleString("fr-FR") + " m²";
   };
 
   const handleDeleteParcelle = async (parcelle: Parcelle) => {
     try {
       await deleteParcelle(parcelle.id);
     } catch (error) {
-      console.error('Erreur lors de la suppression:', error);
+      console.error("Erreur lors de la suppression:", error);
     }
   };
 
@@ -147,17 +155,18 @@ export default function ParcellesTable({
           </h3>
           {stats && (
             <p className="text-sm text-slate-600 dark:text-slate-400">
-              {stats.total} parcelles • {formatSuperficie(stats.totalSuperficie)} au total
+              {stats.total} parcelles •{" "}
+              {formatSuperficie(stats.totalSuperficie)} au total
             </p>
           )}
         </div>
 
         <div className="flex items-center gap-3">
-          <ParcelleForm 
-            mode="create" 
+          <ParcelleForm
+            mode="create"
             onSubmit={(data) => {
-              console.log('Nouvelle parcelle créée:', data);
-            }} 
+              console.log("Nouvelle parcelle créée:", data);
+            }}
           />
         </div>
       </div>
@@ -171,12 +180,14 @@ export default function ParcellesTable({
                 <Square className="h-4 w-4 text-blue-500" />
                 <div>
                   <p className="text-sm text-slate-600">Total Parcelles</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.total}</p>
+                  <p className="text-2xl font-bold text-slate-900">
+                    {stats.total}
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
@@ -190,7 +201,7 @@ export default function ParcellesTable({
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
@@ -204,14 +215,16 @@ export default function ParcellesTable({
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-purple-500" />
                 <div>
                   <p className="text-sm text-slate-600">Avec géométrie</p>
-                  <p className="text-2xl font-bold text-slate-900">{stats.withGeometry}</p>
+                  <p className="text-2xl font-bold text-slate-900">
+                    {stats.withGeometry}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -232,12 +245,12 @@ export default function ParcellesTable({
                 className="pl-10"
               />
             </div>
-            
+
             <Button variant="outline" size="sm">
               <Filter className="h-4 w-4 mr-2" />
               Filtres
             </Button>
-            
+
             <Button variant="outline" size="sm">
               <Download className="h-4 w-4 mr-2" />
               Export
@@ -265,9 +278,9 @@ export default function ParcellesTable({
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                     Dimensions
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                  {/* <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                     Géométrie
-                  </th>
+                  </th> */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                     Date création
                   </th>
@@ -290,16 +303,18 @@ export default function ParcellesTable({
                         ID: {parcelle.id}
                       </div>
                     </td>
-                    
+
                     <td className="px-6 py-4">
                       <div className="text-slate-900 dark:text-slate-50">
-                        <div className="font-medium">{getBlocName(parcelle.parcelle_bloc)}</div>
+                        <div className="font-medium">
+                          {getBlocName(parcelle.parcelle_bloc)}
+                        </div>
                         <div className="text-sm text-slate-600 dark:text-slate-400">
                           {getLotissementName(parcelle.parcelle_bloc)}
                         </div>
                       </div>
                     </td>
-                    
+
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
                         <UserIcon className="h-4 w-4 text-slate-400" />
@@ -307,8 +322,11 @@ export default function ParcellesTable({
                           {getProprietaireName(parcelle.proprietaire)}
                         </span>
                       </div>
+                      <div className="text-xs text-slate-600">
+                        ID CAD: {getProprietaireIDCAD(parcelle.proprietaire)}
+                      </div>
                     </td>
-                    
+
                     <td className="px-6 py-4">
                       <div className="space-y-1">
                         <div className="flex items-center space-x-1">
@@ -319,21 +337,21 @@ export default function ParcellesTable({
                         </div>
                         {parcelle.longeur && (
                           <div className="text-xs text-slate-600">
-                            L: {parcelle.longeur}m • P: {parcelle.perimetre_m}m
+                            P: {parcelle.perimetre_m}m
                           </div>
                         )}
                       </div>
                     </td>
-                    
-                    <td className="px-6 py-4">
+
+                    {/* <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
                         <MapPin className="h-4 w-4 text-purple-500" />
                         <Badge variant={parcelle.geometry ? "default" : "secondary"}>
                           {parcelle.geometry ? "Définie" : "Non définie"}
                         </Badge>
                       </div>
-                    </td>
-                    
+                    </td> */}
+
                     <td className="px-6 py-4 whitespace-nowrap">
                       {parcelle.created_at && (
                         <div className="flex items-center space-x-1">
@@ -344,7 +362,7 @@ export default function ParcellesTable({
                         </div>
                       )}
                     </td>
-                    
+
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-1">
                         <ViewParcelle parcelle={parcelle} />
@@ -357,7 +375,7 @@ export default function ParcellesTable({
                     </td>
                   </tr>
                 ))}
-                
+
                 {filteredParcelles?.length === 0 && (
                   <tr>
                     <td
@@ -366,10 +384,12 @@ export default function ParcellesTable({
                     >
                       <div className="space-y-2">
                         <Square className="h-12 w-12 mx-auto text-slate-300" />
-                        <p className="text-lg font-medium">Aucune parcelle trouvée</p>
+                        <p className="text-lg font-medium">
+                          Aucune parcelle trouvée
+                        </p>
                         <p className="text-sm">
-                          {searchTerm 
-                            ? "Essayez de modifier votre recherche" 
+                          {searchTerm
+                            ? "Essayez de modifier votre recherche"
                             : "Commencez par créer votre première parcelle"}
                         </p>
                       </div>
