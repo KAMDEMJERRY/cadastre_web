@@ -60,7 +60,7 @@ export default function BlocsTab() {
                         <div className="flex items-center space-x-2">
                           <ViewBloc bloc={bloc} />
                           <BlocForm mode="edit" bloc={bloc} />
-                          <MapBloc bloc={bloc} />
+                          {/* <MapBloc bloc={bloc} /> */}
                           <DeleteBloc bloc={bloc} onDelete={deleteBloc} />
                         </div>
                       </td>

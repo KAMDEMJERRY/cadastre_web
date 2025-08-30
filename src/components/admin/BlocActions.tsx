@@ -91,16 +91,7 @@ export function ViewBloc({ bloc }: ViewBlocProps) {
 
           {/* Mesures */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {bloc.longeur && (
-              <div>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  Longueur
-                </label>
-                <p className="text-slate-900 dark:text-slate-100">
-                  {bloc.longeur} m
-                </p>
-              </div>
-            )}
+     
             {bloc.superficie_m2 && (
               <div>
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -123,22 +114,7 @@ export function ViewBloc({ bloc }: ViewBlocProps) {
             )}
           </div>
 
-          {/* GeoJSON */}
-          {bloc.geometry && (
-            <div>
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                Données géométriques
-              </label>
-              <div className="mt-2 bg-slate-50 dark:bg-slate-800 p-3 rounded-md max-h-32 overflow-y-auto">
-                <pre className="text-xs text-slate-600 dark:text-slate-400 whitespace-pre-wrap">
-                  {
-                     JSON.stringify(bloc.geometry, null, 2).substring(0, 300)
-                  }
-                  {(typeof bloc.geometry === 'string' ? bloc.geometry : JSON.stringify(bloc.geometry)).length > 300 && '...'}
-                </pre>
-              </div>
-            </div>
-          )}
+      
         </div>
       </DialogContent>
     </Dialog>
