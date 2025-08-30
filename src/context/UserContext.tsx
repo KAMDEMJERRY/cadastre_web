@@ -49,7 +49,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }, []);
 
 const handleLogin = async (credentials: LoginCredentials) => {
-  console.log("UseProvider: Hello world");
   localStorage.removeItem('access_token');
   localStorage.removeItem('refresh_token');
   setUser(null);
@@ -102,7 +101,6 @@ const handleLogin = async (credentials: LoginCredentials) => {
     try {
       const userProfile = await accountAPI.register(userData);
       setUser(userProfile);
-
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Registration failed';
       setError(errorMessage);

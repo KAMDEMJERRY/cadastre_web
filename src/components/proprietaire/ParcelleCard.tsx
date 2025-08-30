@@ -2,8 +2,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Eye, MapPin, FileText } from "lucide-react";
+import { Eye, MapPin, FileText, Download } from "lucide-react";
 import { ParcelleProprietaire } from "@/types/ui/proprietaire";
+import { parcelleService } from "@/services/api/parcelle";
+import { documentService } from "@/services/api/document";
+import { useRef } from "react";
 
 interface ParcelleCardProps {
   parcelle: ParcelleProprietaire;
@@ -12,28 +15,44 @@ interface ParcelleCardProps {
   onGeneratePDF: (parcelle: ParcelleProprietaire) => void;
 }
 
-export default function ParcelleCard({ 
-  parcelle, 
-  onViewDetails, 
-  onViewMap, 
-  onGeneratePDF 
+export default function ParcelleCard({
+  parcelle,
+  onViewDetails,
 }: ParcelleCardProps) {
-  const getStatusBadge = (statut: string) => {
-    const variants = {
-      'actif': 'bg-green-100 text-green-800 hover:bg-green-200',
-      'en_attente': 'bg-orange-100 text-orange-800 hover:bg-orange-200',
-      'suspendu': 'bg-red-100 text-red-800 hover:bg-red-200'
-    };
-    return variants[statut as keyof typeof variants] || variants.actif;
-  };
+  // const getStatusBadge = (statut: string) => {
+  //   const variants = {
+  //     actif: "bg-green-100 text-green-800 hover:bg-green-200",
+  //     en_attente: "bg-orange-100 text-orange-800 hover:bg-orange-200",
+  //     suspendu: "bg-red-100 text-red-800 hover:bg-red-200",
+  //   };
+  //   return variants[statut as keyof typeof variants] || variants.actif;
+  // };
 
-  const getStatusLabel = (statut: string) => {
-    const labels = {
-      'actif': 'Actif',
-      'en_attente': 'En attente',
-      'suspendu': 'Suspendu'
-    };
-    return labels[statut as keyof typeof labels] || 'Actif';
+  // const getStatusLabel = (statut: string) => {
+  //   const labels = {
+  //     actif: "Actif",
+  //     en_attente: "En attente",
+  //     suspendu: "Suspendu",
+  //   };
+  //   return labels[statut as keyof typeof labels] || "Actif";
+  // };
+
+  const downloadParcelDoc = async () => {
+    let doc  = parcelle.planLocalisation;
+    try {
+      if(parcelle.planLocalisation){
+        const response = await documentService.getByParcelleId(parseInt(parcelle.id));
+        doc = response.document;
+      }
+      const link = document.createElement("a");
+      link.href = doc || "";
+      link.download = `document_parcelle_${parcelle.numero}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Erreur lors du telechargement:", error);
+    }
   };
 
   return (
@@ -43,9 +62,9 @@ export default function ParcelleCard({
           <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
             Parcelle {parcelle.numero}
           </h3>
-          <Badge className={getStatusBadge(parcelle.statut)}>
+          {/* <Badge className={getStatusBadge(parcelle.statut)}>
             {getStatusLabel(parcelle.statut)}
-          </Badge>
+          </Badge> */}
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
@@ -84,7 +103,7 @@ export default function ParcelleCard({
         </div>
 
         <div className="flex gap-2 mt-4">
-          <Button 
+          <Button
             onClick={() => onViewDetails(parcelle)}
             className="flex-1 bg-slate-600 hover:bg-blue-700 text-white"
             size="sm"
@@ -92,21 +111,18 @@ export default function ParcelleCard({
             <Eye className="h-4 w-4 mr-2" />
             Voir détails
           </Button>
-          <Button 
-            onClick={() => onViewMap(parcelle)}
-            variant="outline"
-            size="sm"
-            className="border-slate-300 hover:bg-slate-50"
-          >
-            <MapPin className="h-4 w-4" />
-          </Button>
-          <Button 
-            onClick={() => onGeneratePDF(parcelle)}
+        
+
+          <Button
+            onClick={() => {
+              downloadParcelDoc();
+            }}
             variant="outline"
             size="sm"
             className="border-slate-300 hover:bg-slate-50"
           >
             <FileText className="h-4 w-4" />
+
           </Button>
         </div>
       </CardContent>

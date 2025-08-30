@@ -9,7 +9,7 @@ interface ApiClientConfig {
 
 interface RequestOptions extends RequestInit {
   timeout?: number;
-  skipAuth?: boolean; // Option pour désactiver l'auth header
+  skipAuth?: boolean;
 }
 
 class ApiClient {
@@ -26,65 +26,7 @@ class ApiClient {
     this.defaultTimeout = config.timeout || 10000;
   }
 
-  // Méthode principale pour les requêtes
   private async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-    try {
-      const response = await this.fetchWithRetry(endpoint, options);
-      // return response.json() as Promise<T>;
-      return this.parseResponse<T>(response, options.method);
-    } catch (error) {
-      this.handleError(error);
-      throw error;
-    }
-  }
-
-    // NOUVELLE MÉTHODE: Parser la réponse selon le type de requête
-  private async parseResponse<T>(response: Response, method?: string): Promise<T> {
-    const contentType = response.headers.get('content-type');
-    const contentLength = response.headers.get('content-length');
-    
-    // Pour DELETE, ne pas parser si pas de contenu
-    if (method === 'DELETE') {
-      // Si pas de contenu ou contenu vide
-      if (contentLength === '0' || !contentType?.includes('application/json')) {
-        return undefined as T; // Pour DELETE, on retourne undefined
-      }
-      
-      // Si il y a du contenu JSON, essayer de le parser
-      const text = await response.text();
-      if (!text.trim()) {
-        return undefined as T;
-      }
-      
-      try {
-        return JSON.parse(text) as T;
-      } catch (error) {
-        console.warn('Failed to parse DELETE response as JSON:', error);
-        return undefined as T;
-      }
-    }
-    
-    // Pour les autres méthodes (GET, POST, PUT), parser normalement
-    if (contentType?.includes('application/json')) {
-      const text = await response.text();
-      if (!text.trim()) {
-        return {} as T; // Retourner objet vide si pas de contenu
-      }
-      
-      try {
-        return JSON.parse(text) as T;
-      } catch (error) {
-        console.error('Failed to parse JSON response:', error);
-        throw new ApiError(500, 'Invalid JSON response');
-      }
-    }
-    
-    // Si ce n'est pas du JSON, retourner la réponse brute
-    return response.text() as unknown as T;
-  }
-
-  // Gestion des requêtes avec retry sur 401
-  private async fetchWithRetry(endpoint: string, options: RequestOptions): Promise<Response> {
     const url = `${this.baseURL}${endpoint}`;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), options.timeout || this.defaultTimeout);
@@ -100,32 +42,80 @@ class ApiClient {
 
       // Gestion du refresh token sur 401
       if (response.status === 401 && !options.skipAuth) {
-        await accountAPI.refreshToken();
-        const retryResponse = await fetch(url, {
-          ...options,
-          headers: this.prepareHeaders(options, true),
-          signal: controller.signal,
-        });
-        
-        if (!retryResponse.ok) {
-          throw new ApiError(retryResponse.status, 'Unauthorized after refresh');
+        try {
+          await accountAPI.refreshToken();
+          // Nouvelle tentative avec le nouveau token
+          const retryResponse = await fetch(url, {
+            ...options,
+            headers: this.prepareHeaders(options, true),
+            signal: controller.signal,
+          });
+          
+          if (!retryResponse.ok) {
+            throw new ApiError(retryResponse.status, 'Unauthorized after refresh');
+          }
+          return this.parseResponse<T>(retryResponse, options.method);
+        } catch (refreshError) {
+          // Si le refresh échoue, déconnecter l'utilisateur
+          accountAPI.logout();
+          window.location.href = '/login';
+          throw new ApiError(401, 'Authentication failed');
         }
-        return retryResponse;
       }
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new ApiError(response.status, errorData.message || response.statusText);
+        const errorText = await response.text();
+        let errorMessage = response.statusText;
+        
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        
+        throw new ApiError(response.status, errorMessage);
       }
 
-      return response;
+      return this.parseResponse<T>(response, options.method);
     } catch (error) {
       clearTimeout(timeoutId);
+      
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        throw new ApiError(408, 'Request timeout');
+      }
+      
+      if (error instanceof ApiError && error.status === 401) {
+        accountAPI.logout();
+        window.location.href = '/login';
+      }
+      
       throw error;
     }
   }
 
-  // Préparation des headers avec gestion d'authentification
+  private async parseResponse<T>(response: Response, method?: string): Promise<T> {
+    const contentType = response.headers.get('content-type');
+    const contentLength = response.headers.get('content-length');
+    
+    // Pour DELETE et responses vides
+    if (method === 'DELETE' || contentLength === '0' || response.status === 204) {
+      return undefined as unknown as T;
+    }
+    
+    if (!contentType?.includes('application/json')) {
+      const text = await response.text();
+      return text as unknown as T;
+    }
+    
+    try {
+      return await response.json() as T;
+    } catch (error) {
+      console.warn('Failed to parse JSON response:', error);
+      throw new ApiError(500, 'Invalid JSON response');
+    }
+  }
+
   private prepareHeaders(options: RequestOptions, isRetry: boolean = false): HeadersInit {
     const headers: Record<string, string> = {
       ...this.defaultHeaders,
@@ -142,86 +132,30 @@ class ApiClient {
     return headers;
   }
 
-  // Gestion centralisée des erreurs
-  private handleError(error: unknown): void {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new ApiError(408, 'Request timeout');
-    }
-
-    if (error instanceof ApiError && error.status === 401) {
-      accountAPI.logout();
-      window.location.href = '/login';
-    }
-  }
-
   // Méthodes HTTP publiques
-  public get<T>(endpoint: string, options?: RequestOptions): Promise<T> {
-    return this.request(endpoint, { ...options, method: 'GET' });
+  public get<T>(endpoint: string, options?: Omit<RequestOptions, 'method'>): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'GET' });
   }
 
-  public post<T>(endpoint: string, body: unknown, options?: RequestOptions): Promise<T> {
-    return this.request(endpoint, { 
+  public post<T>(endpoint: string, body: unknown, options?: Omit<RequestOptions, 'method' | 'body'>): Promise<T> {
+    return this.request<T>(endpoint, { 
       ...options, 
       method: 'POST', 
       body: JSON.stringify(body) 
     });
   }
 
-  public put<T>(endpoint: string, body: unknown, options?: RequestOptions): Promise<T> {
-    return this.request(endpoint, { 
+  public put<T>(endpoint: string, body: unknown, options?: Omit<RequestOptions, 'method' | 'body'>): Promise<T> {
+    return this.request<T>(endpoint, { 
       ...options, 
       method: 'PUT', 
       body: JSON.stringify(body) 
     });
   }
 
-  // Remplacez complètement votre méthode delete par celle-ci :
-  public async delete(endpoint: string, options?: RequestOptions): Promise<void> {
-    const url = `${this.baseURL}${endpoint}`;
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), options?.timeout || this.defaultTimeout);
-
-    try {
-      const response = await fetch(url, {
-        method: 'DELETE',
-        headers: this.prepareHeaders(options || {}),
-        signal: controller.signal,
-        ...options,
-      });
-
-      clearTimeout(timeoutId);
-
-      // Gestion du refresh token sur 401
-      if (response.status === 401 && !options?.skipAuth) {
-        await accountAPI.refreshToken();
-        const retryResponse = await fetch(url, {
-          method: 'DELETE',
-          headers: this.prepareHeaders(options || {}, true),
-          signal: controller.signal,
-          ...options,
-        });
-        
-        if (!retryResponse.ok) {
-          throw new ApiError(retryResponse.status, 'Unauthorized after refresh');
-        }
-        
-        // Pour DELETE, on considère que c'est réussi si status 2xx
-        return;
-      }
-
-      if (!response.ok) {
-        throw new ApiError(response.status, `Delete failed: ${response.statusText}`);
-      }
-
-      // Pour DELETE, on ne traite pas la réponse du tout
-      return;
-    } catch (error) {
-      clearTimeout(timeoutId);
-      this.handleError(error);
-      throw error;
-    }
+  public delete<T = void>(endpoint: string, options?: Omit<RequestOptions, 'method'>): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'DELETE' });
   }
- 
 }
 
 class ApiError extends Error {
@@ -231,11 +165,7 @@ class ApiError extends Error {
   }
 }
 
-// Instance API configurée
 export const apiClient = new ApiClient({
   baseUrl: API_BASE_URL,
   timeout: 30000,
 });
-
-
-

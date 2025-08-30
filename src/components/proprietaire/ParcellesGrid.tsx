@@ -23,6 +23,7 @@ export default function ParcellesGrid({
   onGeneratePDF,
   onExportAllPDF 
 }: ParcellesGridProps) {
+  
   const filteredParcelles = useMemo(() => {
     return parcelles.filter(parcelle => {
       // Filtre par lotissement
@@ -40,10 +41,10 @@ export default function ParcellesGrid({
         return false;
       }
 
-      // Filtre par statut
-      if (filters.statut && parcelle.statut !== filters.statut) {
-        return false;
-      }
+      // // Filtre par statut
+      // if (filters.statut && parcelle.statut !== filters.statut) {
+      //   return false;
+      // }
 
       return true;
     });

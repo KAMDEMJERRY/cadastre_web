@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { LotissementService } from "@/services/api/lotissement";
 import { FilterOptions } from "@/types/ui/proprietaire";
 
 interface ProprietaireFiltersProps {
@@ -22,6 +23,7 @@ export default function ProprietaireFilters({
   onFiltersChange, 
   lotissements 
 }: ProprietaireFiltersProps) {
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateFilter = (key: keyof FilterOptions, value: any) => {
     onFiltersChange({
@@ -53,8 +55,8 @@ export default function ProprietaireFilters({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={lotissements[0]}>Tous les lotissements</SelectItem>
-                {lotissements.map((lotissement) => (
-                  <SelectItem key={lotissement} value={lotissement}>
+                {lotissements.map((lotissement, index) => (
+                  <SelectItem key={index} value={lotissement}>
                     {lotissement}
                   </SelectItem>
                 ))}
@@ -90,7 +92,7 @@ export default function ProprietaireFilters({
             />
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="statut" className="text-sm font-medium text-slate-700">
               Statut
             </Label>
@@ -108,7 +110,7 @@ export default function ProprietaireFilters({
                 <SelectItem value="suspendu">Suspendu</SelectItem>
               </SelectContent>
             </Select>
-          </div>
+          </div> */}
         </div>
       </CardContent>
     </Card>

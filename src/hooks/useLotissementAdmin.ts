@@ -8,7 +8,7 @@ import { LotissementContext } from "@/context/LotissementContext";
 export const useLotissement = () => {
     const context = useContext(LotissementContext);
     if (context === undefined) {
-        throw new Error('useUser must be used within a UserProvider');
+        throw new Error('use must be used within a UserProvider');
     }
     return context;
 }

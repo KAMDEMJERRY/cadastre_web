@@ -37,7 +37,9 @@ import { useParcelle } from "@/hooks/useParcellesAdmin";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { uploadFile } from "@/lib/utils";
-import { POST_PARCELLEFILELOC } from "@/utils/constants/end_points";
+import { PARCELLEDOC_URL } from "@/utils/constants/end_points";
+import { apiClient } from "@/services/client";
+import { documentService } from "@/services/api/document";
 
 // Schema de validation basé sur les spécifications exactes de l'API
 const parcelleSchema = z.object({
@@ -154,33 +156,25 @@ if (mode === "create") {
 try {
   // Vérifier que l'URL du fichier et l'ID de la parcelle existent
   if (LocFileUrl && Newparcelle?.id) {
-    const parcelleImgData = {
-      parcelle_fileLoc: LocFileUrl,
+
+    const ParcelleDocument = {
+      document: LocFileUrl,
       parcelle: Newparcelle.id
     };
 
     // Envoyer les données au backend
-    const response = await fetch(POST_PARCELLEFILELOC, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(parcelleImgData)
-    });
+    const data = documentService.post(ParcelleDocument);
 
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP: ${response.status}`);
-    }
-
-    const data = await response.json();
     console.log("URL du fichier enregistrée avec succès:", data);
     
   } else {
     console.warn("URL du fichier ou ID de parcelle manquant");
   }
 } catch (error) {
+
   console.error("Erreur lors de l'envoi de l'URL:", error);
   // Gérer l'erreur (afficher un message à l'utilisateur, etc.)
+
 }
 
       onSubmit?.(cleanedData as Omit<Parcelle, "id">);

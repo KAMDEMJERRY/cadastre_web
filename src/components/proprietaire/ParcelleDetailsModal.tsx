@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { MapPin, FileText, Download, X } from "lucide-react";
 import { ParcelleProprietaire } from "@/types/ui/proprietaire";
+import { documentService } from "@/services/api/document";
 
 interface ParcelleDetailsModalProps {
   parcelle: ParcelleProprietaire | null;
@@ -29,35 +30,36 @@ export default function ParcelleDetailsModal({
 }: ParcelleDetailsModalProps) {
   if (!parcelle) return null;
 
-  const getStatusBadge = (statut: string) => {
-    const variants = {
-      'actif': 'bg-green-100 text-green-800',
-      'en_attente': 'bg-orange-100 text-orange-800',
-      'suspendu': 'bg-red-100 text-red-800'
-    };
-    return variants[statut as keyof typeof variants] || variants.actif;
-  };
-
-  const getStatusLabel = (statut: string) => {
-    const labels = {
-      'actif': 'Actif',
-      'en_attente': 'En attente',
-      'suspendu': 'Suspendu'
-    };
-    return labels[statut as keyof typeof labels] || 'Actif';
+ const downloadParcelDoc = async () => {
+    console.log("Parcelle Plan de localisation: ",parcelle.planLocalisation)
+    let doc  = parcelle.planLocalisation;
+    try {
+      if(!parcelle.planLocalisation){
+        const response = await documentService.getByParcelleId(parseInt(parcelle.id));
+        doc = response.document;
+      }
+      const link = document.createElement("a");
+      link.href = doc || "";
+      link.download = `document_parcelle_${parcelle.numero}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Erreur lors du telechargement:", error);
+    }
   };
 
   const infoSections = [
-    {
-      title: "Localisation",
-      items: [
-        { label: "Pays", value: parcelle.localisation.pays },
-        { label: "Région", value: parcelle.localisation.region },
-        { label: "Département", value: parcelle.localisation.departement },
-        { label: "Arrondissement", value: parcelle.localisation.arrondissement },
-        { label: "Quartier", value: parcelle.localisation.quartier }
-      ]
-    },
+    // {
+    //   title: "Localisation",
+    //   items: [
+    //     { label: "Pays", value: parcelle.localisation.pays },
+    //     { label: "Région", value: parcelle.localisation.region },
+    //     { label: "Département", value: parcelle.localisation.departement },
+    //     { label: "Arrondissement", value: parcelle.localisation.arrondissement },
+    //     { label: "Quartier", value: parcelle.localisation.quartier }
+    //   ]
+    // },
     {
       title: "Identification",
       items: [
@@ -72,7 +74,7 @@ export default function ParcelleDetailsModal({
       items: [
         { label: "Superficie", value: `${parcelle.superficie.toLocaleString()} m²` },
         { label: "Périmètre", value: `${parcelle.perimetre} m` },
-        { label: "Statut", value: getStatusLabel(parcelle.statut) },
+        // { label: "Statut", value: getStatusLabel(parcelle.statut) },
         { label: "Plan de localisation", value: parcelle.planLocalisation ? "Disponible" : "Non disponible" }
       ]
     }
@@ -85,15 +87,15 @@ export default function ParcelleDetailsModal({
           <div className="flex items-center justify-between">
             <div>
               <DialogTitle className="text-2xl font-bold text-slate-900">
-                Parcelle {parcelle.numero}
+                Parcelle : {parcelle.numero}
               </DialogTitle>
               <DialogDescription className="text-slate-600 mt-2">
                 {parcelle.bloc.lotissement.nom} - {parcelle.bloc.nom}
               </DialogDescription>
             </div>
-            <Badge className={getStatusBadge(parcelle.statut)}>
+            {/* <Badge className={getStatusBadge(parcelle.statut)}>
               {getStatusLabel(parcelle.statut)}
-            </Badge>
+            </Badge> */}
           </div>
         </DialogHeader>
 
@@ -122,6 +124,7 @@ export default function ParcelleDetailsModal({
         <Separator className="my-6" />
 
         <div className="flex flex-col sm:flex-row gap-3 justify-end">
+         
           <Button 
             variant="outline" 
             onClick={onClose}
@@ -130,31 +133,35 @@ export default function ParcelleDetailsModal({
             <X className="h-4 w-4 mr-2" />
             Fermer
           </Button>
-          <Button 
+         
+          {/* <Button 
             variant="outline" 
             onClick={() => onViewMap(parcelle)}
             className="border-blue-300 text-blue-600 hover:bg-blue-50"
           >
             <MapPin className="h-4 w-4 mr-2" />
             Localiser sur la carte
-          </Button>
+          </Button> */}
+
           {parcelle.planLocalisation && (
             <Button 
               variant="outline" 
-              onClick={() => window.open(parcelle.planLocalisation, '_blank')}
+              onClick={downloadParcelDoc}
               className="border-green-300 text-green-600 hover:bg-green-50"
             >
               <Download className="h-4 w-4 mr-2" />
               Plan de localisation
             </Button>
           )}
-          <Button 
+
+          {/* <Button 
             onClick={() => onGeneratePDF(parcelle)}
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             <FileText className="h-4 w-4 mr-2" />
             Générer PDF
-          </Button>
+          </Button> */}
+
         </div>
       </DialogContent>
     </Dialog>

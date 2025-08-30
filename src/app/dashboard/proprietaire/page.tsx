@@ -42,6 +42,18 @@ export default function ProprietaireDashboard() {
     }
   };
 
+  const lotissements = ()=>{
+    // parcellesData?.map((p))
+    const uniqueLotissements = new Set<string>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    parcellesData?.forEach((p:any)=>{
+      if(p?.bloc){
+        uniqueLotissements.add(p.bloc.nom);
+      }
+    });
+    return Array.from(uniqueLotissements);  
+  }
+
   const handleViewDetails = (parcelle: ParcelleProprietaire) => {
     setSelectedParcelle(parcelle);
     setIsModalOpen(true);
@@ -112,8 +124,9 @@ export default function ProprietaireDashboard() {
         <ProprietaireFilters 
           filters={filters}
           onFiltersChange={setFilters}
-          lotissements={mockLotissements}
+          lotissements={lotissements()}
         />
+      
 
         {/* Grille des parcelles */}
 
