@@ -1,13 +1,13 @@
 import { APIParcelleFeature, APIParcelleResponse, Parcelle } from "@/types/parcelle";
 import { apiClient } from "../client";
-import { mapParcelleDataToStatProprietaires, mapParcellesToParcelleData } from "@/utils/mappers/parcelleMapper";
+import { mapParcellesToParcelleData } from "@/utils/mappers/parcelleMapper";
 import { ParcelleProprietaire } from "@/types/ui/proprietaire";
 
 
 export const parcelleService = {
   
   async getByProprietaire(): Promise<ParcelleProprietaire[]> {
-    const response = await apiClient.get<APIParcelleResponse>('/cadastre/parcelle');  
+    const response = await apiClient.get<APIParcelleResponse>('/cadastre/parcelle/');  
     console.log("Response from parcelleService.getByProprietaire:", response);
     const parcelles =  processParcelles(response);
     console.log("parcelles", parcelles);
@@ -16,17 +16,15 @@ export const parcelleService = {
   },
 
   async  getByProprietaireAndParcelleId(id: number): Promise<Parcelle> {
-    const response = await apiClient.get<Parcelle>(`/cadastre/parcelle/${id}`);
+    const response = await apiClient.get<Parcelle>(`/cadastre/parcelle/${id}/`);
     
     return response;
   },
 
   // Methodes pour l'admin
   async getByAdmin(): Promise<Parcelle[]>{
-      const response = await apiClient.get<APIParcelleResponse>(`/cadastre/parcelle`);
-      console.log("Response from parcelleService.getByProprietaire:", response);
+      const response = await apiClient.get<APIParcelleResponse>(`/cadastre/parcelle/`);
       const parcelles =  processParcelles(response);
-      console.log("parcelles", parcelles);
       return parcelles;
   },
   
@@ -36,12 +34,12 @@ export const parcelleService = {
   },
   
   async updateByAdmin(id: number, parcelleData: Omit<Parcelle, 'id'>): Promise<Parcelle> {
-    const response = await apiClient.put<Parcelle>(`/cadastre/parcelle/${id}`, parcelleData);
+    const response = await apiClient.put<Parcelle>(`/cadastre/parcelle/${id}/`, parcelleData);
     return response;
   },
 
   async deleteByAdmin(id: number): Promise<void> {
-    await apiClient.delete(`/cadastre/parcelle/${id}`);
+    await apiClient.delete(`/cadastre/parcelle/${id}/`);
   },
 
 

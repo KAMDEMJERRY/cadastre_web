@@ -5,8 +5,8 @@ import { User } from "./user";
 // Modèle Parcelle
 export interface Parcelle extends BaseGeometry {
   name: string;
-  parcelle_bloc: number | Bloc; // ID ou objet complet
-  proprietaire: number | User; // ID ou objet complet
+  parcelle_bloc: number ; // ID ou objet complet
+  proprietaire: number ; // ID ou objet complet
 }
 
 export interface ParcelleDetailed extends Omit<Parcelle, 'id' | 'parcelle_bloc' | 'proprietaire'> {

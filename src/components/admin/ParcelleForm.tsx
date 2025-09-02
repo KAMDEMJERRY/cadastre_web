@@ -40,6 +40,7 @@ import { uploadFile } from "@/lib/utils";
 import { PARCELLEDOC_URL } from "@/utils/constants/end_points";
 import { apiClient } from "@/services/client";
 import { documentService } from "@/services/api/document";
+import ConfirmationAlert from "../ui/confirm-alert";
 
 // Schema de validation basé sur les spécifications exactes de l'API
 const parcelleSchema = z.object({
@@ -81,7 +82,6 @@ interface Parcelle {
   coordonnees_gps?: string;
   description?: string;
   prix?: number;
-  statut: string;
   date_creation?: string;
 }
 
@@ -104,7 +104,8 @@ export default function ParcelleForm({
   );
 
   const { createParcelle, updateParcelle } = useParcelle();
-  const [LocFileUrl, setLocFileUrl]= useState<string|null>(null);
+  const [LocFileUrl, setLocFileUrl] = useState<string | null>(null);
+  const [alertOpen, setAlerOpen] = useState(false);
 
   const form = useForm<ParcelleFormInputs>({
     resolver: zodResolver(parcelleSchema),
@@ -120,9 +121,11 @@ export default function ParcelleForm({
       coordonnees_gps: parcelle?.coordonnees_gps || "",
       description: parcelle?.description || "",
       prix: parcelle?.prix || undefined,
-      statut: (parcelle?.statut as any) || "Disponible",
     },
   });
+  const handleValidationAlert = (data: ParcelleFormInputs) => {
+    setAlerOpen(true);
+  };
 
   const handleSubmit = async (data: ParcelleFormInputs) => {
     try {
@@ -146,36 +149,35 @@ export default function ParcelleForm({
 
       console.log("Données envoyées à l'API:", cleanedData);
 
- let Newparcelle;
-if (mode === "create") {
-  Newparcelle = await createParcelle(cleanedData as Omit<Parcelle, "id">);
-} else if (mode === "edit" && parcelle?.id) {
-  Newparcelle = await updateParcelle(parcelle.id, cleanedData as Omit<Parcelle, "id">);
-}
+      let Newparcelle;
+      if (mode === "create") {
+        Newparcelle = await createParcelle(cleanedData as Omit<Parcelle, "id">);
+      } else if (mode === "edit" && parcelle?.id) {
+        Newparcelle = await updateParcelle(
+          parcelle.id,
+          cleanedData as Omit<Parcelle, "id">
+        );
+      }
 
-try {
-  // Vérifier que l'URL du fichier et l'ID de la parcelle existent
-  if (LocFileUrl && Newparcelle?.id) {
+      try {
+        // Vérifier que l'URL du fichier et l'ID de la parcelle existent
+        if (LocFileUrl && Newparcelle?.id) {
+          const ParcelleDocument = {
+            document: LocFileUrl,
+            parcelle: Newparcelle.id,
+          };
 
-    const ParcelleDocument = {
-      document: LocFileUrl,
-      parcelle: Newparcelle.id
-    };
+          // Envoyer les données au backend
+          const data = documentService.post(ParcelleDocument);
 
-    // Envoyer les données au backend
-    const data = documentService.post(ParcelleDocument);
-
-    console.log("URL du fichier enregistrée avec succès:", data);
-    
-  } else {
-    console.warn("URL du fichier ou ID de parcelle manquant");
-  }
-} catch (error) {
-
-  console.error("Erreur lors de l'envoi de l'URL:", error);
-  // Gérer l'erreur (afficher un message à l'utilisateur, etc.)
-
-}
+          console.log("URL du fichier enregistrée avec succès:", data);
+        } else {
+          console.warn("URL du fichier ou ID de parcelle manquant");
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'envoi de l'URL:", error);
+        // Gérer l'erreur (afficher un message à l'utilisateur, etc.)
+      }
 
       onSubmit?.(cleanedData as Omit<Parcelle, "id">);
       setOpen(false);
@@ -187,26 +189,33 @@ try {
     }
   };
 
-
   const getButtonText = () => {
     switch (mode) {
-      case "create": return "Nouvelle Parcelle";
-      case "edit": return "Modifier";
-      case "import": return "Import";
-      default: return "Action";
+      case "create":
+        return "Nouvelle Parcelle";
+      case "edit":
+        return "Modifier";
+      case "import":
+        return "Import";
+      default:
+        return "Action";
     }
   };
 
   const getButtonIcon = () => {
     switch (mode) {
-      case "create": return <Plus className="h-4 w-4 mr-2" />;
-      case "edit": return <Edit className="h-4 w-4" />;
-      case "import": return <Upload className="h-4 w-4 mr-2" />;
-      default: return null;
+      case "create":
+        return <Plus className="h-4 w-4 mr-2" />;
+      case "edit":
+        return <Edit className="h-4 w-4" />;
+      case "import":
+        return <Upload className="h-4 w-4 mr-2" />;
+      default:
+        return null;
     }
   };
 
-  const renderTriggerButton = ()=>{
+  const renderTriggerButton = () => {
     if (mode === "create") {
       return (
         <Button className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-50 dark:hover:bg-slate-200 dark:text-slate-900">
@@ -214,7 +223,6 @@ try {
           {getButtonText()}
         </Button>
       );
-      
     }
 
     return (
@@ -226,7 +234,7 @@ try {
         {getButtonIcon()}
       </Button>
     );
-  }
+  };
 
   if (mode === "import") {
     return (
@@ -241,32 +249,38 @@ try {
       </Dialog>
     );
   }
-  
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {renderTriggerButton()}
-      </DialogTrigger>
+      <DialogTrigger asChild>{renderTriggerButton()}</DialogTrigger>
       <ParcelleFormDialog
-          mode={mode}
-          form={form}
-          selectedLotissement={selectedLotissement}
-          setSelectedLotissement={setSelectedLotissement}
-          onSubmit={handleSubmit}
-          setOpen={setOpen}
-          setLocFileUrl={setLocFileUrl}
+        mode={mode}
+        form={form}
+        selectedLotissement={selectedLotissement}
+        setSelectedLotissement={setSelectedLotissement}
+        onSubmit={handleValidationAlert}
+        setOpen={setOpen}
+        setLocFileUrl={setLocFileUrl}
+      />
+      {/* Alerte de confirmation */}
+      <ConfirmationAlert
+        open={alertOpen}
+        mode={mode}
+        resourceName={"le lotissement"}
+        onConfirm={()=>handleSubmit(form.getValues())}
+        onCancel={() => setOpen(false)}
       />
     </Dialog>
   );
 }
 
-interface ParcelleFormDialogProps{
-    mode: "create" | "edit";
-    form: UseFormReturn<ParcelleFormInputs, any, ParcelleFormInputs>;
-    selectedLotissement: string;
-    setSelectedLotissement: (value: string) => void;
-    onSubmit: (data: ParcelleFormInputs)=> void;
-    setOpen: (open: boolean) => void;
+interface ParcelleFormDialogProps {
+  mode: "create" | "edit";
+  form: UseFormReturn<ParcelleFormInputs, any, ParcelleFormInputs>;
+  selectedLotissement: string;
+  setSelectedLotissement: (value: string) => void;
+  onSubmit: (data: ParcelleFormInputs) => void;
+  setOpen: (open: boolean) => void;
 }
 interface formProps {
   form: UseFormReturn<ParcelleFormInputs, any, ParcelleFormInputs>;
@@ -284,56 +298,55 @@ function ParcelleFormDialog({
   setSelectedLotissement,
   onSubmit,
   setOpen,
-  setLocFileUrl
+  setLocFileUrl,
+}: ParcelleFormDialogProps & { setLocFileUrl: (arg: string) => void }) {
+  const getDialogTitle = () => {
+    return mode === "create" ? "Nouvelle Parelle" : "Modifier Parcelle";
+  };
 
-}: ParcelleFormDialogProps&{setLocFileUrl: (arg: string)=>void}){
-  const getDialogTitle = ()=>{
-    return mode==="create" ? "Nouvelle Parelle" : "Modifier Parcelle";
-  }
-
-  const getDialogDescription = ()=>{
-    return mode==="create"
-    ? "Creer une nouvelle parcelle"
-    : "Modifier les informations de la parcelles";
-  }
+  const getDialogDescription = () => {
+    return mode === "create"
+      ? "Creer une nouvelle parcelle"
+      : "Modifier les informations de la parcelles";
+  };
 
   return (
     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{getDialogTitle()}</DialogTitle>
-          <DialogDescription>{getDialogDescription()}</DialogDescription>
-        </DialogHeader>
+      <DialogHeader>
+        <DialogTitle>{getDialogTitle()}</DialogTitle>
+        <DialogDescription>{getDialogDescription()}</DialogDescription>
+      </DialogHeader>
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6"
-          >
-            {/* Informations de base */}
-            <BasicInfoSection form={form}/>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Informations de base */}
+          <BasicInfoSection form={form} />
 
-            {/* Localisation */}
-            <LocationSection form={form} selectedLotissement={selectedLotissement} setSelectedLotissement={setSelectedLotissement} />
+          {/* Localisation */}
+          <LocationSection
+            form={form}
+            selectedLotissement={selectedLotissement}
+            setSelectedLotissement={setSelectedLotissement}
+          />
 
-            {/* Propriétaire */}
-            <OwnerSection form={form} />
+          {/* Propriétaire */}
+          <OwnerSection form={form} />
 
-            {/* Dimensions */}
-            <DimensionsSection form={form} />
+          {/* Dimensions */}
+          <DimensionsSection form={form} />
 
-            {/* Localisation et géométrie */}
-            <GeographySection form={form} setLoc={setLocFileUrl}/>
+          {/* Localisation et géométrie */}
+          <GeographySection form={form} setLoc={setLocFileUrl} mode={mode} />
 
-            {/* Description */}
-            <DescriptionSection form={form} />
+          {/* Description */}
+          <DescriptionSection form={form} />
 
-            {/*Footer*/}
-            <FormFooter mode={mode} setOpen={setOpen} />
-          </form>
-        </Form>
-      </DialogContent>
+          {/*Footer*/}
+          <FormFooter mode={mode} setOpen={setOpen} />
+        </form>
+      </Form>
+    </DialogContent>
   );
-
 }
 
 function BasicInfoSection({ form }: formProps) {
@@ -356,7 +369,6 @@ function BasicInfoSection({ form }: formProps) {
             </FormItem>
           )}
         />
-
       </div>
     </div>
   );
@@ -463,7 +475,6 @@ function OwnerSection({ form }: formProps) {
       <h3 className="text-lg font-medium text-slate-900">Propriété</h3>
       <div className="grid grid-cols-1 md:grid-cols-1  gap-0">
         <FormField
-        
           control={form.control}
           name="proprietaire"
           render={({ field }) => (
@@ -484,8 +495,7 @@ function OwnerSection({ form }: formProps) {
                       key={proprietaire.id}
                       value={proprietaire.id.toString()}
                     >
-                      {proprietaire.full_name}
-                      ({proprietaire.id_cadastrale})
+                      {proprietaire.full_name}({proprietaire.id_cadastrale})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -554,12 +564,18 @@ function DimensionsSection({ form }: formProps) {
   );
 }
 
-function GeographySection({ form, setLoc }: formProps&{setLoc:(loc:string)=>void}) {
+function GeographySection({
+  form,
+  setLoc,
+  mode,
+}: formProps & { setLoc: (loc: string) => void; mode: "edit" | "create" }) {
   const [geoFile, setGeoFile] = useState<File | null>(null);
   const [error, setError] = useState<string>("");
-  const handleGeoFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGeoFileUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
-    if(!file) return;
+    if (!file) return;
     setGeoFile(file);
 
     try {
@@ -570,21 +586,23 @@ function GeographySection({ form, setLoc }: formProps&{setLoc:(loc:string)=>void
       console.error("error GeoFile:", error);
     }
   };
+
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium text-slate-900 flex items-center">
+      {/* <h3 className="text-lg font-medium text-slate-900 flex items-center">
         <MapPin className="h-5 w-5 mr-2" />
-        Fichier Localisation et Geometrie
-      </h3>
+        Fichier Localisation
+      </h3> */}
       <div className="grid grid-cols-1 gap-4">
         <div className="space-y-3">
-          <FormLabel>Localisation et Géométrie de la parcelle</FormLabel>
+          <FormLabel>Fichier de Localisation de la parcelle</FormLabel>
           <div className="border-2 border-dashed border-slate-300 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
                 <FileText className="h-5 w-5 text-slate-400" />
                 <span className="text-sm font-medium text-slate-700">
-                  Importer un fichier de Localisation
+                  Importer un `{mode === "edit" && "nouveau"}` fichier de
+                  Localisation
                 </span>
               </div>
               <Button
@@ -604,7 +622,9 @@ function GeographySection({ form, setLoc }: formProps&{setLoc:(loc:string)=>void
               type="file"
               accept="*.pdf"
               className="hidden"
-              onChange={(e) => {handleGeoFileUpload(e);}}
+              onChange={(e) => {
+                handleGeoFileUpload(e);
+              }}
             />
 
             {geoFile && (

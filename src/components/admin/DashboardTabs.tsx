@@ -89,16 +89,7 @@ export default function DashboardTabs() {
   );
 }
 function TableHeader({
-    activeTab,
-  searchQuery,
-  setSearchQuery,
-  filters,
-  updateFilter,
-  resetFilters,
-  isFilterOpen,
-  setIsFilterOpen,
-  resultsCount,
-  totalCount
+  
 }:DashboardFilterProps) {
 
   

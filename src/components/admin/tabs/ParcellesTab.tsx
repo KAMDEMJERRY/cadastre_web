@@ -61,7 +61,6 @@ export default function ParcellesTable({
       0
     );
     const avgSuperficie = totalSuperficie / filteredParcelles.length;
-
     return {
       total: filteredParcelles.length,
       totalSuperficie,
@@ -173,7 +172,7 @@ export default function ParcellesTable({
 
       {/* Statistiques */}
       {showStats && stats && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
@@ -216,7 +215,7 @@ export default function ParcellesTable({
             </CardContent>
           </Card>
 
-          <Card>
+          {/* <Card>
             <CardContent className="p-4">
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-purple-500" />
@@ -228,7 +227,7 @@ export default function ParcellesTable({
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       )}
 
@@ -242,11 +241,11 @@ export default function ParcellesTable({
                 placeholder="Rechercher par nom de parcelle..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 md:w-225"
               />
             </div>
 
-            <Button variant="outline" size="sm">
+            {/* <Button variant="outline" size="sm">
               <Filter className="h-4 w-4 mr-2" />
               Filtres
             </Button>
@@ -254,7 +253,7 @@ export default function ParcellesTable({
             <Button variant="outline" size="sm">
               <Download className="h-4 w-4 mr-2" />
               Export
-            </Button>
+            </Button> */}
           </div>
         </CardContent>
       </Card>
@@ -299,9 +298,9 @@ export default function ParcellesTable({
                       <div className="font-medium text-slate-900 dark:text-slate-50">
                         {parcelle.name}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                      {/* <div className="text-sm text-slate-600 dark:text-slate-400">
                         ID: {parcelle.id}
-                      </div>
+                      </div> */}
                     </td>
 
                     <td className="px-6 py-4">
@@ -366,7 +365,7 @@ export default function ParcellesTable({
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-1">
                         <ViewParcelle parcelle={parcelle} />
-                        <EditParcelle parcelle={parcelle} />
+                        <ParcelleForm mode={"edit"} parcelle={parcelle}  />
                         <DeleteParcelle
                           parcelle={parcelle}
                           onDelete={() => handleDeleteParcelle(parcelle)}

@@ -1,8 +1,10 @@
 // Type pour les erreurs API
 export interface ApiError {
+  status: string;
   message: string;
-  field?: string;
-  code?: string;
+  errors?:{
+    [key: string]:string[];
+  };
 }
 
 // Type pour les réponses d'erreur
