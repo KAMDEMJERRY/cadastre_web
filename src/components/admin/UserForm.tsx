@@ -113,7 +113,7 @@ export default function UserForm({ mode, user, userType }: UserFormProps) {
         console.log(userData);
         const updatedUser = await updateUser(
           user.id,
-          data 
+          userData
         );
         console.log("Updated User");
         console.log(updatedUser);

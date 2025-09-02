@@ -71,7 +71,7 @@ export default function ProprietaireDashboard() {
 
   const handleGeneratePDF = (parcelle: ParcelleProprietaire) => {
     // Simulation de la génération PDF
-    alert(`Génération du PDF pour la parcelle ${parcelle.numero}...\n\nDocument: Attestation de propriété\nSuperficie: ${parcelle.superficie} m²\nLotissement: ${parcelle.bloc.lotissement.nom}`);
+    // alert(`Génération du PDF pour la parcelle ${parcelle.numero}...\n\nDocument: Attestation de propriété\nSuperficie: ${parcelle.superficie} m²\nLotissement: ${parcelle.bloc.lotissement.nom}`);
     
     // Logique réelle pour générer le PDF
     // const pdfData = {
@@ -84,7 +84,7 @@ export default function ProprietaireDashboard() {
   const handleExportAllPDF = () => {
     // Simulation de l'export de toutes les parcelles
     const totalSuperficie = mockParcelles.reduce((sum, p) => sum + p.superficie, 0);
-    alert(`Génération du rapport complet...\n\nNombre de parcelles: ${mockParcelles.length}\nSuperficie totale: ${totalSuperficie.toLocaleString()} m²\nPropriétaire: ${mockProprietaireProfile.nom}`);
+    // alert(`Génération du rapport complet...\n\nNombre de parcelles: ${mockParcelles.length}\nSuperficie totale: ${totalSuperficie.toLocaleString()} m²\nPropriétaire: ${mockProprietaireProfile.nom}`);
     
     // Logique réelle pour générer le PDF complet
     // const reportData = {

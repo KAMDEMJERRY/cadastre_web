@@ -286,7 +286,7 @@ export function DeleteBloc({ bloc, onDelete }: DeleteBlocProps) {
       setIsOpen(false);
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
-      alert('Erreur lors de la suppression du bloc');
+      // alert('Erreur lors de la suppression du bloc');
     } finally {
       setIsDeleting(false);
     }

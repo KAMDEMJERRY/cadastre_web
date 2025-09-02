@@ -13,7 +13,7 @@ type UsersContextType = {
   updateUser: (
     id: number,
     userData: Omit<UserUpdatePayload, "id">
-  ) => Promise<User>;
+  ) => Promise<User|undefined>;
   deleteUser: (id: number) => Promise<void>;
   assignRole: (id: number, role: string) => Promise<void>;
   toggleUserStatus: (id: number, isActive: boolean) => Promise<void>;
@@ -67,7 +67,7 @@ export function UsersProvider({ children }: { children: React.ReactNode }) {
         console.log(response);
         return response;
       } catch (e) {
-        throw e;
+        console.log(e);
       } finally {
         console.log("end");
       }

@@ -49,7 +49,7 @@ export const buildUserData = (data: any): UserCreatePayload => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const buildUpdatedData = (data: any): UserUpdatePayload => {
+export const buildUpdatedData = (data: any) => {
   // Valider les champs obligatoires
   if (!data.email || !data.account_type) {
     throw new Error("Données manquantes");
@@ -57,7 +57,7 @@ export const buildUpdatedData = (data: any): UserUpdatePayload => {
   console.log("Updated", data);
   const updatedData = {
     email: data.email,
-    username: data.username || data.email.split("@")[0],
+    username: data.full_name ,
     password: data.password, // À implémenter
     id_cadastrale: data.id_cadastrale, // À implémenter
     genre: ["M", "F"].includes(data.genre) ? data.genre : "",
@@ -67,7 +67,7 @@ export const buildUpdatedData = (data: any): UserUpdatePayload => {
     num_telephone: data.num_telephone ? data.num_telephone.slice(0, 9) : null,
     account_type: data.account_type === "ORG" ? "ORG" : "IND",
     domaine: data.domaine || "",
-    nom_organization: data.account_type === "ORG" ? data.nom_organization : "",
+    nom_organization: data.full_name,
   };
   return updatedData;
 };

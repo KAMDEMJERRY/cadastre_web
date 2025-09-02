@@ -110,17 +110,17 @@ export default function BlocForm({
 
     // Validations
     if (!formData.name.trim()) {
-      alert("Le nom du bloc est requis.");
+      // alert("Le nom du bloc est requis.");
       return;
     }
 
     if (formData.name.length > 100) {
-      alert("Le nom ne peut pas dépasser 100 caractères");
+      // alert("Le nom ne peut pas dépasser 100 caractères");
       return;
     }
 
     if (!formData.lotissement_id) {
-      alert("Veuillez sélectionner un lotissement.");
+      // alert("Veuillez sélectionner un lotissement.");
       return;
     }
 

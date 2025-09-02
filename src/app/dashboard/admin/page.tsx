@@ -36,7 +36,7 @@ export default function AdminDashboard() {
 
                   <DashboardTabs />
 
-                  <PerformanceSummary />
+                  {/* <PerformanceSummary /> */}
                 </div>
               </main>
             </div>

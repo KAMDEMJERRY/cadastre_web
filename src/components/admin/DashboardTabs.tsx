@@ -137,12 +137,12 @@ function TableHeader({
           </TabsTrigger>
         )}
 
-        <TabsTrigger
+        {/* <TabsTrigger
           value="outils"
           className="flex-1 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700"
         >
           Outils
-        </TabsTrigger>
+        </TabsTrigger> */}
       </TabsList>
 
         {/* <div className="flex items-center space-x-2 ml-4">
@@ -199,9 +199,9 @@ function TableContent({
         <UtilisateursTab userType="admin" />
       </TabsContent>
 
-      <TabsContent value="outils">
+      {/* <TabsContent value="outils">
         <ToolsTab />
-      </TabsContent>
+      </TabsContent> */}
     </>
   );
 }

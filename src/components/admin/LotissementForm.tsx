@@ -100,12 +100,12 @@ export default function LotissementForm({
   const handleSubmit = async () => {
 
     if (!formData.name.trim()) {
-      alert("Le nom du lotissement est requis.");
+      // alert("Le nom du lotissement est requis.");
       return;
     }
 
     if (formData.name.length > 100) {
-      alert("Le nom ne peut pas dépasser 100 caractères");
+      // alert("Le nom ne peut pas dépasser 100 caractères");
       return;
     }
 
