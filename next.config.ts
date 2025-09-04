@@ -35,11 +35,19 @@ const nextConfig = {
     API_URL: process.env.API_URL,
   },
   // Important pour les redirections et rewrites
-  async rewrites() {
+   async rewrites() {
+    const apiTarget = process.env.NEXT_PUBLIC_API_URL 
+      ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
+      : 'http://localhost:8000';
+    
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
+        destination: `${apiTarget}/api/:path*`,
+      },
+      {
+        source: '/docs/:path*',
+        destination: `${apiTarget}/docs/:path*`,
       },
     ];
   },
