@@ -18,8 +18,15 @@ export default function LoginPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 to-slate-800">
-      <div className="login-container w-full max-w-md bg-slate-100/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 sm:p-12">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 to-slate-800"
+          style={{
+            backgroundImage: "url('/background/tour.jpg')",
+            backgroundSize:"cover",
+            backgroundPosition:'center',
+            backgroundRepeat:'no-repeat'
+          }}
+    >
+      <div className="login-container w-full max-w-md bg-slate-100/80 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-8 sm:p-12">
         <AuthForm />
         
         <div className="relative my-8">

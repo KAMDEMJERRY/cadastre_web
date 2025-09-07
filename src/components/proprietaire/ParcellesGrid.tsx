@@ -57,13 +57,13 @@ export default function ParcellesGrid({
           <CardTitle className="text-lg font-semibold text-slate-900">
             Mes Parcelles ({filteredParcelles.length})
           </CardTitle>
-          <Button 
+          {/* <Button 
             onClick={onExportAllPDF}
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             <FileText className="h-4 w-4 mr-2" />
             Exporter PDF
-          </Button>
+          </Button> */}
         </div>
       </CardHeader>
       

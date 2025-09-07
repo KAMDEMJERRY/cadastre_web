@@ -11,11 +11,14 @@ export default function Home(){
     <div
       className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-slate-50 dark:bg-slate-950"
       style={{
-        // backgroundImage = `url('/background.svg')`,
+        backgroundImage:`url('/background/reunification.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition:'center',
+        backgroundRepeat:'no-repeat'
       }}
     >   
         {/* Overlay (fond floute) pour ameliorer la lisibilite avec le theme slate */}
-        <div className="absolute inset-0 bg-white/5 dark:bg-slate-950/20 backdrop-blur-[1px]"></div>
+        <div className="absolute inset-0 backdrop-blur-sm bg-white/20 dark:bg-slate-950/20 backdrop-blur-[1px]"></div>
         
         <main className="flex flex-col gap-8 row-start-2 items-center relative z-10 max-w-2xl mx-auto">
               {/* Card principale avec component shadcn */}
