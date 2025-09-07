@@ -25,7 +25,7 @@ export const API_BASE_URL = getApiBaseUrl();
 // URLs spécifiques
 export const LOGIN_URL = `${API_BASE_URL}/accounts/login`;
 export const USER_PROFILE_URL = `${API_BASE_URL}/users/me`;
-export const PARCELLEDOC_URL = `${API_BASE_URL}/docs/document`;
+export const PARCELLEDOC_URL = `/docs/document`;
 
 // Ajoutez d'autres URLs ici selon vos besoins
 export const LOTISSEMENTS_URL = `${API_BASE_URL}/lotissements`;
