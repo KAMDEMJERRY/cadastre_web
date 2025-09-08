@@ -167,9 +167,9 @@ export default function ParcelleForm({
             parcelle: Newparcelle.id,
           };
 
+          console.log("Document de la parcelle:",ParcelleDocument)
           // Envoyer les données au backend
-          const data = documentService.post(ParcelleDocument);
-
+          const data = await documentService.post(ParcelleDocument);
           console.log("URL du fichier enregistrée avec succès:", data);
         } else {
           console.warn("URL du fichier ou ID de parcelle manquant");
@@ -580,7 +580,7 @@ function GeographySection({
 
     try {
       const uploadLoc = await uploadFile(file);
-      setLoc(uploadLoc);
+      setLoc(uploadLoc.downloadUrl);
     } catch (error) {
       setError("Erreur lors de l'importation du fichier");
       console.error("error GeoFile:", error);
@@ -638,8 +638,7 @@ function GeographySection({
             )}
 
             <p className="text-xs text-slate-500">
-              Formats acceptés: .geojson, .json (Feature, FeatureCollection, ou
-              géométrie directe)
+              Formats acceptés: .pdf
             </p>
           </div>
         </div>

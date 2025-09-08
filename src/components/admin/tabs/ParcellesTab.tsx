@@ -334,7 +334,7 @@ export default function ParcellesTable({
                             {formatSuperficie(parcelle.superficie_m2)}
                           </span>
                         </div>
-                        {parcelle.longeur && (
+                        {parcelle.perimetre_m && (
                           <div className="text-xs text-slate-600">
                             P: {parcelle.perimetre_m}m
                           </div>
