@@ -595,14 +595,13 @@ function GeographySection({
       </h3> */}
       <div className="grid grid-cols-1 gap-4">
         <div className="space-y-3">
-          <FormLabel>Fichier de Localisation de la parcelle</FormLabel>
+          <FormLabel>Document Technique de la parcelle</FormLabel>
           <div className="border-2 border-dashed border-slate-300 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
                 <FileText className="h-5 w-5 text-slate-400" />
                 <span className="text-sm font-medium text-slate-700">
-                  Importer un `{mode === "edit" && "nouveau"}` fichier de
-                  Localisation
+                  Importer un `{mode === "edit" && "nouveau"}` document technique
                 </span>
               </div>
               <Button

@@ -75,7 +75,7 @@ export default function ParcelleDetailsModal({
         { label: "Superficie", value: `${parcelle.superficie.toLocaleString()} m²` },
         { label: "Périmètre", value: `${parcelle.perimetre} m` },
         // { label: "Statut", value: getStatusLabel(parcelle.statut) },
-        { label: "Plan de localisation", value: parcelle.planLocalisation ? "Disponible" : "Non disponible" }
+        { label: "Document technique", value: parcelle.planLocalisation ? "Disponible" : "Non disponible" }
       ]
     }
   ];
@@ -150,7 +150,7 @@ export default function ParcelleDetailsModal({
               className="border-green-300 text-green-600 hover:bg-green-50"
             >
               <Download className="h-4 w-4 mr-2" />
-              Plan de localisation
+              Document Technique
             </Button>
           )}
 
