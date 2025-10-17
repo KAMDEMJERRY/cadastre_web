@@ -81,7 +81,20 @@ export function UserProvider({ children }: { children: ReactNode }) {
           : "/dashboard/proprietaire";
 
       // Ouvrir dans un nouvel onglet
-      window.open(dashboardUrl, "_blank");
+      setTimeout(() => {
+        const newWindow = window.open(dashboardUrl, "_blank");
+
+        if (
+          !newWindow ||
+          newWindow.closed ||
+          typeof newWindow.closed === "undefined"
+        ) {
+          // Si bloqué, rediriger après un délai visible
+          setTimeout(() => {
+            window.location.href = dashboardUrl;
+          }, 1500);
+        }
+      }, 100);
       
     } catch (err) {
       console.error("Login error:", err);
